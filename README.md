@@ -1,4 +1,4 @@
-# Base cultures potagères
+# Sillon, base cultures potagères
 
 Vingt légumes et aromatiques courants du potager, décrits pour la Gironde : fenêtres de semis et de plantation, durée de culture, température de base, coefficients d'arrosage, espacements, associations, durée de vie des graines.
 
@@ -42,4 +42,4 @@ Pour une correction ou une nouvelle région, ouvrez une pull request avec, pour 
 
 ## Licence
 
-[CC BY-SA 4.0](LICENSE). Vous pouvez réutiliser et modifier ces données, y compris à des fins commerciales, en citant « Base cultures potagères, Pierrick Deniel » et en partageant vos modifications sous la même licence.
+[CC BY-SA 4.0](LICENSE). Vous pouvez réutiliser et modifier ces données, y compris à des fins commerciales, en citant « Sillon, base cultures potagères, Pierrick Deniel » et en partageant vos modifications sous la même licence.
