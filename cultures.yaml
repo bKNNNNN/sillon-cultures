@@ -1,0 +1,296 @@
+# Base cultures. Une culture par bloc.
+# Regles : une valeur porte `source` seulement si le texte du document cite a ete
+# lu et contient cette valeur. Sinon elle porte `estimate: true` seul. Les valeurs
+# issues de sources non specifiques au Bordelais portent `estimate: true` en plus.
+# Fenetres : semaines ISO (1-53), from > to autorise (passage du nouvel an).
+# Fenetres de semis : estimations pour la Gironde (derniers gels vers mi-avril).
+# Quand une `source` CIVAM/ARS est citee, ce sont les valeurs du calendrier
+# Auvergne-Rhone-Alpes, plus froid, NON adaptees au Medoc. Aucun ajustement chiffre
+# n'a ete applique : la fenetre saisie est une estimation, la source n'est qu'une reference.
+# `sowDirect` couvre aussi la plantation de caieux (ail) et de tubercules (pomme de terre).
+# `daysToMaturity` : duree totale de saison (colonne Total) du tableau 11 de la FAO 56,
+# pas une premiere recolte. Les 14 valeurs ont ete relues le 2026-10-16 dans le texte du
+# tableau (https://www.fao.org/4/x0490e/x0490e0b.htm) ; chaque `source` nomme la ligne
+# retenue (culture, date de semis, region). Aucune ligne ne vise le Bordelais : les
+# valeurs gardent `estimate: true`.
+# `kc` : valeurs lues dans les jeux de donnees du paquet R FAO56 (extraits du tableau 12 de
+# la FAO 56) et toutes verifiees. Pour la tomate, le tableau donne une fin de saison de
+# 0.70 a 0.90 ; `late: 0.8` est le milieu de cette fourchette.
+# `seedLifespanYears` : valeurs relevees dans un resume de resultat de recherche de la page
+# "Espace pour la vie, conservation des semences de legumes" (page illisible, erreur 403) ;
+# AUCUNE source citee. Fourchette ramenee a sa borne basse (courge 6-8 -> 6, radis 4-5 -> 4).
+# Aucun `gdd` : aucune source de degres-jours vers la maturite n'a ete trouvee.
+# Associations : synthese de fiches grand public (neozone.org, FREDON Auvergne-Rhone-Alpes,
+# goodfood.brussels), non sourcees valeur par valeur.
+
+- id: tomate
+  name: Tomate
+  family: solanacees
+  sowUnderCover: { value: { from: 8, to: 13 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  transplant: { value: { from: 19, to: 22 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  tBaseC: { value: 10.0, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
+  daysToMaturity: { value: 155, source: "FAO-56 tableau 11, ligne Tomato, Apr/May, Calif., USA, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  spacingCm: { value: { inRow: 50, betweenRows: 70 }, estimate: true }
+  kc: { value: { initial: 0.6, mid: 1.15, late: 0.8 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
+  frostSensitive: true
+  goodCompanions: [carotte, oignon, poireau, basilic, chou, persil, ail]
+  badCompanions: [pomme-de-terre, betterave]
+  seedLifespanYears: { value: 5, estimate: true }
+  maturitySigns: "Fruits bien colorés et fermes, qui se détachent facilement du pied."
+
+- id: courgette
+  name: Courgette
+  family: cucurbitacees
+  sowUnderCover: { value: { from: 14, to: 18 }, estimate: true }
+  sowDirect: { value: { from: 19, to: 23 }, estimate: true }
+  transplant: { value: { from: 19, to: 23 }, estimate: true }
+  tBaseC: { value: 7.2, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
+  daysToMaturity: { value: 100, source: "FAO-56 tableau 11, ligne Squash, Zucchini, Apr; Dec., Medit.; Arid Reg., https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  spacingCm: { value: { inRow: 80, betweenRows: 100 }, estimate: true }
+  kc: { value: { initial: 0.5, mid: 0.95, late: 0.75 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
+  frostSensitive: true
+  goodCompanions: [basilic]
+  badCompanions: []
+  maturitySigns: "Fruit de 15 à 20 cm, à cueillir jeune et souvent."
+
+- id: courge
+  name: Courge
+  family: cucurbitacees
+  sowUnderCover: { value: { from: 15, to: 18 }, estimate: true }
+  sowDirect: { value: { from: 19, to: 22 }, estimate: true }
+  transplant: { value: { from: 20, to: 23 }, estimate: true }
+  tBaseC: { value: 7.2, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
+  daysToMaturity: { value: 100, source: "FAO-56 tableau 11, ligne Pumpkin, Winter squash, Mar, Aug, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  spacingCm: { value: { inRow: 100, betweenRows: 150 }, estimate: true }
+  kc: { value: { initial: 0.5, mid: 1.0, late: 0.8 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
+  frostSensitive: true
+  goodCompanions: [haricot]
+  badCompanions: [pomme-de-terre]
+  seedLifespanYears: { value: 6, estimate: true }
+  maturitySigns: "Pédoncule sec et liégeux, peau dure qui ne se raye plus à l'ongle."
+
+- id: concombre
+  name: Concombre
+  family: cucurbitacees
+  sowUnderCover: { value: { from: 15, to: 19 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  sowDirect: { value: { from: 20, to: 23 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  transplant: { value: { from: 20, to: 24 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  tBaseC: { value: 12.8, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
+  daysToMaturity: { value: 105, source: "FAO-56 tableau 11, ligne Cucumber, June/Aug, Arid Region, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  spacingCm: { value: { inRow: 50, betweenRows: 100 }, estimate: true }
+  kc: { value: { initial: 0.6, mid: 1.0, late: 0.75 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
+  frostSensitive: true
+  goodCompanions: [basilic, haricot]
+  badCompanions: [pomme-de-terre]
+  seedLifespanYears: { value: 8, estimate: true }
+  maturitySigns: "Fruit ferme et vert foncé, récolte avant que les graines gonflent."
+
+- id: haricot
+  name: Haricot
+  family: fabacees
+  sowDirect: { value: { from: 18, to: 31 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  tBaseC: { value: 10.0, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
+  daysToMaturity: { value: 90, source: "FAO-56 tableau 11, ligne Beans (green), Feb/Mar, Calif., Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  spacingCm: { value: { inRow: 10, betweenRows: 40 }, estimate: true }
+  kc: { value: { initial: 0.5, mid: 1.05, late: 0.9 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
+  frostSensitive: true
+  goodCompanions: [carotte, chou, fraise, salade, pomme-de-terre]
+  badCompanions: [ail, oignon, poireau, petit-pois]
+  seedLifespanYears: { value: 3, estimate: true }
+  successionDays: { value: 21, estimate: true }
+  maturitySigns: "Gousses fines et lisses, avant que les grains ne bombent."
+
+- id: petit-pois
+  name: Petit pois
+  family: fabacees
+  sowDirect: { value: { from: 7, to: 16 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
+  daysToMaturity: { value: 90, source: "FAO-56 tableau 11, ligne Peas, May, Europe, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  spacingCm: { value: { inRow: 5, betweenRows: 40 }, estimate: true }
+  kc: { value: { initial: 0.5, mid: 1.15, late: 1.1 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
+  frostSensitive: false
+  goodCompanions: [carotte, radis, salade, chou]
+  badCompanions: [ail, oignon, poireau, haricot]
+  seedLifespanYears: { value: 3, estimate: true }
+  successionDays: { value: 21, estimate: true }
+  maturitySigns: "Gousses bien remplies mais encore vertes et brillantes."
+
+- id: salade
+  name: Salade
+  family: asteracees
+  sowUnderCover: { value: { from: 6, to: 12 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  sowDirect: { value: { from: 10, to: 37 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  transplant: { value: { from: 12, to: 36 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
+  daysToMaturity: { value: 75, source: "FAO-56 tableau 11, ligne Lettuce, April, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  spacingCm: { value: { inRow: 25, betweenRows: 30 }, estimate: true }
+  kc: { value: { initial: 0.7, mid: 1.0, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
+  frostSensitive: false
+  goodCompanions: [carotte, radis, fraise, oignon, haricot]
+  badCompanions: []
+  seedLifespanYears: { value: 3, estimate: true }
+  successionDays: { value: 14, estimate: true }
+  maturitySigns: "Pomme ferme ou rosette fournie, à cueillir avant la montée en graines."
+
+- id: radis
+  name: Radis
+  family: brassicacees
+  sowDirect: { value: { from: 8, to: 38 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  daysToMaturity: { value: 35, source: "FAO-56 tableau 11, ligne Radish, Mar/Apr, Medit.; Europe, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  spacingCm: { value: { inRow: 3, betweenRows: 15 }, estimate: true }
+  kc: { value: { initial: 0.7, mid: 0.9, late: 0.85 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
+  frostSensitive: false
+  goodCompanions: [carotte, salade, petit-pois]
+  badCompanions: []
+  seedLifespanYears: { value: 4, estimate: true }
+  successionDays: { value: 14, estimate: true }
+  maturitySigns: "Racine de 2 à 3 cm de diamètre, à arracher sans tarder."
+
+- id: carotte
+  name: Carotte
+  family: apiacees
+  sowDirect: { value: { from: 11, to: 30 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  tBaseC: { value: 3.3, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
+  daysToMaturity: { value: 100, source: "FAO-56 tableau 11, ligne Carrots, Oct/Jan, Arid climate, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  spacingCm: { value: { inRow: 5, betweenRows: 25 }, estimate: true }
+  kc: { value: { initial: 0.7, mid: 1.05, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
+  frostSensitive: false
+  goodCompanions: [ail, oignon, poireau, tomate, radis, salade]
+  badCompanions: [betterave]
+  successionDays: { value: 21, estimate: true }
+  maturitySigns: "Collet de 2 à 3 cm, couleur franche."
+
+- id: betterave
+  name: Betterave
+  family: amaranthacees
+  sowDirect: { value: { from: 14, to: 30 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
+  daysToMaturity: { value: 70, source: "FAO-56 tableau 11, ligne Beets, table, Apr/May, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  spacingCm: { value: { inRow: 10, betweenRows: 30 }, estimate: true }
+  kc: { value: { initial: 0.5, mid: 1.05, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
+  frostSensitive: false
+  goodCompanions: [oignon, chou]
+  badCompanions: [tomate, carotte]
+  successionDays: { value: 21, estimate: true }
+  maturitySigns: "Racine de 5 à 8 cm de diamètre."
+
+- id: poireau
+  name: Poireau
+  family: amaryllidacees
+  sowDirect: { value: { from: 12, to: 20 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  transplant: { value: { from: 24, to: 33 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  spacingCm: { value: { inRow: 10, betweenRows: 30 }, estimate: true }
+  frostSensitive: false
+  goodCompanions: [carotte, fraise, tomate]
+  badCompanions: [haricot, petit-pois]
+  maturitySigns: "Fût blanc d'environ 2 cm de diamètre."
+
+- id: oignon
+  name: Oignon
+  family: amaryllidacees
+  sowUnderCover: { value: { from: 3, to: 8 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  sowDirect: { value: { from: 9, to: 14 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  transplant: { value: { from: 10, to: 15 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  tBaseC: { value: 1.7, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
+  daysToMaturity: { value: 150, source: "FAO-56 tableau 11, ligne Onion (dry), April, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  spacingCm: { value: { inRow: 10, betweenRows: 25 }, estimate: true }
+  kc: { value: { initial: 0.7, mid: 1.05, late: 0.75 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
+  frostSensitive: false
+  goodCompanions: [carotte, fraise, salade, betterave, tomate]
+  badCompanions: [haricot, petit-pois]
+  maturitySigns: "Feuillage jauni et couché, collet sec."
+
+- id: ail
+  name: Ail
+  family: amaryllidacees
+  sowDirect: { value: { from: 42, to: 5 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  spacingCm: { value: { inRow: 10, betweenRows: 25 }, estimate: true }
+  kc: { value: { initial: 0.7, mid: 1.0, late: 0.7 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
+  frostSensitive: false
+  goodCompanions: [carotte, fraise, tomate, oignon]
+  badCompanions: [chou, haricot, petit-pois]
+  maturitySigns: "Feuilles jaunies sur les deux tiers, bulbe garni de caïeux."
+
+- id: pomme-de-terre
+  name: Pomme de terre
+  family: solanacees
+  sowDirect: { value: { from: 10, to: 18 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
+  daysToMaturity: { value: 130, source: "FAO-56 tableau 11, ligne Potato, May, Continental Climate, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  spacingCm: { value: { inRow: 35, betweenRows: 70 }, estimate: true }
+  kc: { value: { initial: 0.5, mid: 1.15, late: 0.75 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
+  frostSensitive: true
+  goodCompanions: [haricot]
+  badCompanions: [tomate, oignon, courge, concombre]
+  maturitySigns: "Fanes jaunies et sèches, peau qui ne s'écaille plus."
+
+- id: epinard
+  name: Épinard
+  family: amaranthacees
+  sowDirect: { value: { from: 36, to: 41 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  daysToMaturity: { value: 100, source: "FAO-56 tableau 11, ligne Spinach, November, Arid Region, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  spacingCm: { value: { inRow: 10, betweenRows: 25 }, estimate: true }
+  kc: { value: { initial: 0.7, mid: 1.0, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
+  frostSensitive: false
+  goodCompanions: [fraise, chou]
+  badCompanions: []
+  successionDays: { value: 14, estimate: true }
+  maturitySigns: "Rosette de feuilles bien développées, à cueillir avant la montée en fleurs."
+
+- id: blette
+  name: Blette
+  family: amaranthacees
+  sowDirect: { value: { from: 15, to: 27 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  spacingCm: { value: { inRow: 25, betweenRows: 40 }, estimate: true }
+  frostSensitive: false
+  goodCompanions: [chou]
+  badCompanions: []
+  maturitySigns: "Feuilles larges et côtes épaisses, cueillies par l'extérieur."
+
+- id: chou
+  name: Chou
+  family: brassicacees
+  sowUnderCover: { value: { from: 9, to: 14 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  transplant: { value: { from: 16, to: 24 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  daysToMaturity: { value: 165, source: "FAO-56 tableau 11, ligne Cabbage, Sept, Calif. Desert, USA, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  spacingCm: { value: { inRow: 50, betweenRows: 60 }, estimate: true }
+  kc: { value: { initial: 0.7, mid: 1.05, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
+  frostSensitive: false
+  goodCompanions: [betterave, haricot, salade, petit-pois, tomate]
+  badCompanions: [ail, oignon, fraise]
+  maturitySigns: "Pomme ferme et compacte sous la main."
+
+- id: fraise
+  name: Fraise
+  family: rosacees
+  transplant: { value: { from: 35, to: 41 }, estimate: true }
+  tBaseC: { value: 3.9, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
+  spacingCm: { value: { inRow: 30, betweenRows: 40 }, estimate: true }
+  kc: { value: { initial: 0.4, mid: 0.85, late: 0.75 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
+  frostSensitive: false
+  goodCompanions: [ail, salade, oignon, poireau, haricot]
+  badCompanions: [chou]
+  maturitySigns: "Fruit entièrement rouge, parfumé, qui se détache sans effort."
+
+- id: basilic
+  name: Basilic
+  family: lamiacees
+  sowUnderCover: { value: { from: 12, to: 17 }, estimate: true }
+  sowDirect: { value: { from: 19, to: 24 }, estimate: true }
+  transplant: { value: { from: 19, to: 23 }, estimate: true }
+  spacingCm: { value: { inRow: 20, betweenRows: 25 }, estimate: true }
+  frostSensitive: true
+  goodCompanions: [tomate, concombre, courgette]
+  badCompanions: []
+  maturitySigns: "Cueillir les sommités avant la floraison."
+
+- id: persil
+  name: Persil
+  family: apiacees
+  sowUnderCover: { value: { from: 8, to: 12 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  sowDirect: { value: { from: 11, to: 33 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  spacingCm: { value: { inRow: 15, betweenRows: 25 }, estimate: true }
+  frostSensitive: false
+  goodCompanions: [tomate, carotte]
+  badCompanions: []
+  maturitySigns: "Feuilles bien fournies, coupées à l'extérieur."
