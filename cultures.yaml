@@ -1,13 +1,53 @@
 # Base cultures. Une culture par bloc.
 # Regles : une valeur porte `source` seulement si le texte du document cite a ete
-# lu et contient cette valeur. Sinon elle porte `estimate: true` seul. Les valeurs
-# issues de sources non specifiques au Bordelais portent `estimate: true` en plus.
-# Fenetres : semaines ISO (1-53), from > to autorise (passage du nouvel an).
-# Fenetres de semis : estimations pour la Gironde (derniers gels vers mi-avril).
-# Quand une `source` CIVAM/ARS est citee, ce sont les valeurs du calendrier
-# Auvergne-Rhone-Alpes, plus froid, NON adaptees au Medoc. Aucun ajustement chiffre
-# n'a ete applique : la fenetre saisie est une estimation, la source n'est qu'une reference.
+# lu et contient cette valeur, ou l'information dont elle derive directement. Sinon
+# elle porte `estimate: true` seul. `estimate: true` ne tombe que si la source est
+# propre a la Gironde, a la Nouvelle-Aquitaine, au Sud-Ouest ou a une zone oceanique
+# douce qui couvre explicitement Bordeaux.
+#
+# Fenetres (`sowUnderCover`, `sowDirect`, `transplant`) : semaines ISO (1-53),
+# from > to autorise (passage du nouvel an).
+# Regle mois vers semaines : une source donne des mois. "Debut de mois" = semaine ISO
+# du premier lundi du mois, "fin de mois" = semaine ISO du dernier lundi du mois,
+# calculees sur 2026 (les numeros bougent d'une semaine au plus selon l'annee).
+# Debuts de mois utilises : fevrier S6, mars S10, avril S15, mai S19.
 # `sowDirect` couvre aussi la plantation de caieux (ail) et de tubercules (pomme de terre).
+#
+# Sources regionales lues pour les fenetres (aucune ne donne de fenetre complete) :
+# - Jardiner Malin, calendrier par climat, https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html :
+#   Aquitaine et Poitou-Charentes classes en climat semi-oceanique. Carottes, laitues,
+#   oignons, poireaux, radis semes "tout au long du mois de mars" (debut S10) ; pommes de
+#   terre "des debut avril" en Aquitaine (S15) ; tomates, haricots, courgettes, concombres
+#   "des debut mai" en Aquitaine (S19).
+# - Bordeaux au Vert (maraicher bio de Bordeaux), https://www.bordeaux-transition.org/semer-en-fevrier-sous-la-fenetre-ce-qui-leve-a-bordeaux-avant-avril/ :
+#   tomates, basilic, persil et certaines salades semes a l'interieur "des fevrier" (debut S6) ;
+#   gelees tardives possibles jusqu'a mi-avril, plus longtemps pres de la Garonne.
+# - Meteo-France, fiche climatologique 1991-2020 de Bordeaux-Merignac (33281001),
+#   https://object.files.data.gouv.fr/meteofrance/data/synchro_ftp/REF_STATION/FICHECLIM_33281001.pdf :
+#   jours moyens avec Tn <= 0 C : mars 1.8, avril 0.1, mai 0. Cadre pour les plantations
+#   de cultures sensibles au gel ; aucune fenetre n'en est derivee mecaniquement.
+# - Conseil departemental de la Gironde, livret "Graine d'assiette" 2016-2017,
+#   https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf :
+#   semis de printemps et d'ete ideal en mars, plants au potager environ deux mois plus
+#   tard, apres les dernieres gelees. Le calendrier par legume est une image illisible en
+#   texte : aucune valeur par culture n'en est tiree.
+# Chambre d'agriculture, FREDON, INRAE : aucun calendrier amateur Gironde lisible trouve.
+#
+# Ce qui reste une estimation : TOUTES les fenetres. Quand une source regionale ne donne
+# que le debut de la fenetre, `from` en derive, `to` reste l'ancienne valeur, et la
+# `source` le dit ("from: ... to: ..."). Les fenetres sans source regionale gardent leur
+# valeur, un commentaire au-dessus, et `estimate: true` ; si elles citent encore le
+# calendrier CIVAM/ARS Auvergne-Rhone-Alpes (plus froid que le Medoc), ce n'est qu'une
+# reference, non adaptee. Aucune fenetre n'a ete tiree de la memoire.
+#
+# `firstHarvestDays` : delai jusqu'a la PREMIERE recolte, `from` dit si les jours courent
+# depuis le semis (`sowing`) ou la plantation (`transplant`). Toutes les valeurs actuelles
+# partent du semis. Regle de la fourchette : si la source donne une fourchette, on garde
+# la borne basse. Conversion : 1 semaine = 7 jours, 1 mois = 30 jours. Sources : fiches
+# culture Jardiner Malin et fiches produit Vilmorin vendues par Truffaut, nationales (une
+# variete pour radis, betterave, concombre, petit pois, epinard), donc `estimate: true`.
+# Aucune valeur pour les autres cultures : pas de source lue (tomate, poireau, etc.).
+#
 # `daysToMaturity` : duree totale de saison (colonne Total) du tableau 11 de la FAO 56,
 # pas une premiere recolte. Les 14 valeurs ont ete relues le 2026-10-16 dans le texte du
 # tableau (https://www.fao.org/4/x0490e/x0490e0b.htm) ; chaque `source` nomme la ligne
@@ -26,8 +66,10 @@
 - id: tomate
   name: Tomate
   family: solanacees
-  sowUnderCover: { value: { from: 8, to: 13 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
-  transplant: { value: { from: 19, to: 22 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
+  sowUnderCover: { value: { from: 6, to: 13 }, estimate: true, source: "from: Bordeaux au Vert, maraicher bio de Bordeaux, https://www.bordeaux-transition.org/semer-en-fevrier-sous-la-fenetre-ce-qui-leve-a-bordeaux-avant-avril/. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
+  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
+  transplant: { value: { from: 19, to: 22 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
   tBaseC: { value: 10.0, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 155, source: "FAO-56 tableau 11, ligne Tomato, Apr/May, Calif., USA, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   spacingCm: { value: { inRow: 50, betweenRows: 70 }, estimate: true }
@@ -41,11 +83,15 @@
 - id: courgette
   name: Courgette
   family: cucurbitacees
+  # Aucune source regionale lue : valeur conservee, estimation.
   sowUnderCover: { value: { from: 14, to: 18 }, estimate: true }
-  sowDirect: { value: { from: 19, to: 23 }, estimate: true }
-  transplant: { value: { from: 19, to: 23 }, estimate: true }
+  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
+  sowDirect: { value: { from: 19, to: 23 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: estimation, aucune source" }
+  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
+  transplant: { value: { from: 19, to: 23 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: estimation, aucune source" }
   tBaseC: { value: 7.2, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 100, source: "FAO-56 tableau 11, ligne Squash, Zucchini, Apr; Dec., Medit.; Arid Reg., https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  firstHarvestDays: { value: { days: 60, from: sowing }, source: "Jardiner Malin, fiche culture, https://www.jardiner-malin.fr/fiche/courgette.html ('La récolte a lieu environ 2 mois après le semis')", estimate: true }
   spacingCm: { value: { inRow: 80, betweenRows: 100 }, estimate: true }
   kc: { value: { initial: 0.5, mid: 0.95, late: 0.75 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: true
@@ -56,8 +102,11 @@
 - id: courge
   name: Courge
   family: cucurbitacees
+  # Aucune source regionale lue : valeur conservee, estimation.
   sowUnderCover: { value: { from: 15, to: 18 }, estimate: true }
+  # Aucune source regionale lue : valeur conservee, estimation.
   sowDirect: { value: { from: 19, to: 22 }, estimate: true }
+  # Aucune source regionale lue : valeur conservee, estimation.
   transplant: { value: { from: 20, to: 23 }, estimate: true }
   tBaseC: { value: 7.2, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 100, source: "FAO-56 tableau 11, ligne Pumpkin, Winter squash, Mar, Aug, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
@@ -72,11 +121,15 @@
 - id: concombre
   name: Concombre
   family: cucurbitacees
+  # Aucune source regionale lue : valeur conservee, estimation.
   sowUnderCover: { value: { from: 15, to: 19 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
-  sowDirect: { value: { from: 20, to: 23 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
-  transplant: { value: { from: 20, to: 24 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
+  sowDirect: { value: { from: 19, to: 23 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
+  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
+  transplant: { value: { from: 19, to: 24 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
   tBaseC: { value: 12.8, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 105, source: "FAO-56 tableau 11, ligne Cucumber, June/Aug, Arid Region, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  firstHarvestDays: { value: { days: 60, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/sachet-graines-de-concombre-breso-hf1.html (Breso HF1 : '60 jours du semis à la récolte')", estimate: true }
   spacingCm: { value: { inRow: 50, betweenRows: 100 }, estimate: true }
   kc: { value: { initial: 0.6, mid: 1.0, late: 0.75 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: true
@@ -88,9 +141,11 @@
 - id: haricot
   name: Haricot
   family: fabacees
-  sowDirect: { value: { from: 18, to: 31 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
+  sowDirect: { value: { from: 19, to: 31 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
   tBaseC: { value: 10.0, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 90, source: "FAO-56 tableau 11, ligne Beans (green), Feb/Mar, Calif., Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  firstHarvestDays: { value: { days: 60, from: sowing }, source: "Jardiner Malin, fiche culture, https://www.jardiner-malin.fr/fiche/haricot.html ('2 à 4 mois après semis', borne basse)", estimate: true }
   spacingCm: { value: { inRow: 10, betweenRows: 40 }, estimate: true }
   kc: { value: { initial: 0.5, mid: 1.05, late: 0.9 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: true
@@ -103,9 +158,11 @@
 - id: petit-pois
   name: Petit pois
   family: fabacees
+  # Aucune source regionale lue : valeur conservee, estimation.
   sowDirect: { value: { from: 7, to: 16 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
   tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 90, source: "FAO-56 tableau 11, ligne Peas, May, Europe, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  firstHarvestDays: { value: { days: 60, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/graines-potageres-pois-ecosser-nain-rondo-bio-681522.html (Rondo bio : 'Récolte : 60 jours après le semis')", estimate: true }
   spacingCm: { value: { inRow: 5, betweenRows: 40 }, estimate: true }
   kc: { value: { initial: 0.5, mid: 1.15, late: 1.1 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
@@ -118,11 +175,15 @@
 - id: salade
   name: Salade
   family: asteracees
-  sowUnderCover: { value: { from: 6, to: 12 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
-  sowDirect: { value: { from: 10, to: 37 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
+  sowUnderCover: { value: { from: 6, to: 12 }, estimate: true, source: "from: Bordeaux au Vert, maraicher bio de Bordeaux, https://www.bordeaux-transition.org/semer-en-fevrier-sous-la-fenetre-ce-qui-leve-a-bordeaux-avant-avril/. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
+  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
+  sowDirect: { value: { from: 10, to: 37 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
+  # Aucune source regionale lue : valeur conservee, estimation.
   transplant: { value: { from: 12, to: 36 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
   tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 75, source: "FAO-56 tableau 11, ligne Lettuce, April, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  firstHarvestDays: { value: { days: 42, from: sowing }, source: "Jardiner Malin, fiche culture, https://www.jardiner-malin.fr/fiche/laitue.html ('Environ 6 semaines après semis')", estimate: true }
   spacingCm: { value: { inRow: 25, betweenRows: 30 }, estimate: true }
   kc: { value: { initial: 0.7, mid: 1.0, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
@@ -135,8 +196,10 @@
 - id: radis
   name: Radis
   family: brassicacees
-  sowDirect: { value: { from: 8, to: 38 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
+  sowDirect: { value: { from: 10, to: 38 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
   daysToMaturity: { value: 35, source: "FAO-56 tableau 11, ligne Radish, Mar/Apr, Medit.; Europe, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  firstHarvestDays: { value: { days: 18, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/sachet-graines-radis-de-18-jours-50-gratuit.html (radis de 18 jours : '18 à 20 jours après le semis', borne basse)", estimate: true }
   spacingCm: { value: { inRow: 3, betweenRows: 15 }, estimate: true }
   kc: { value: { initial: 0.7, mid: 0.9, late: 0.85 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
@@ -149,9 +212,11 @@
 - id: carotte
   name: Carotte
   family: apiacees
-  sowDirect: { value: { from: 11, to: 30 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
+  sowDirect: { value: { from: 10, to: 30 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
   tBaseC: { value: 3.3, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 100, source: "FAO-56 tableau 11, ligne Carrots, Oct/Jan, Arid climate, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  firstHarvestDays: { value: { days: 90, from: sowing }, source: "Jardiner Malin, fiche culture, https://www.jardiner-malin.fr/fiche/carotte.html ('entre 3 et 6 mois après le semis', borne basse)", estimate: true }
   spacingCm: { value: { inRow: 5, betweenRows: 25 }, estimate: true }
   kc: { value: { initial: 0.7, mid: 1.05, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
@@ -163,9 +228,11 @@
 - id: betterave
   name: Betterave
   family: amaranthacees
+  # Aucune source regionale lue : valeur conservee, estimation.
   sowDirect: { value: { from: 14, to: 30 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
   tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 70, source: "FAO-56 tableau 11, ligne Beets, table, Apr/May, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  firstHarvestDays: { value: { days: 70, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/sachet-graines-betterave-de-detroit-2-race-preco.html (Detroit 2 : '10 à 12 semaines après semis', borne basse)", estimate: true }
   spacingCm: { value: { inRow: 10, betweenRows: 30 }, estimate: true }
   kc: { value: { initial: 0.5, mid: 1.05, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
@@ -177,7 +244,9 @@
 - id: poireau
   name: Poireau
   family: amaryllidacees
-  sowDirect: { value: { from: 12, to: 20 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
+  sowDirect: { value: { from: 10, to: 20 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
+  # Aucune source regionale lue : valeur conservee, estimation.
   transplant: { value: { from: 24, to: 33 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
   spacingCm: { value: { inRow: 10, betweenRows: 30 }, estimate: true }
   frostSensitive: false
@@ -188,8 +257,11 @@
 - id: oignon
   name: Oignon
   family: amaryllidacees
+  # Aucune source regionale lue : valeur conservee, estimation.
   sowUnderCover: { value: { from: 3, to: 8 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
-  sowDirect: { value: { from: 9, to: 14 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
+  sowDirect: { value: { from: 10, to: 14 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
+  # Aucune source regionale lue : valeur conservee, estimation.
   transplant: { value: { from: 10, to: 15 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
   tBaseC: { value: 1.7, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 150, source: "FAO-56 tableau 11, ligne Onion (dry), April, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
@@ -203,6 +275,7 @@
 - id: ail
   name: Ail
   family: amaryllidacees
+  # Aucune source regionale lue : valeur conservee, estimation.
   sowDirect: { value: { from: 42, to: 5 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
   spacingCm: { value: { inRow: 10, betweenRows: 25 }, estimate: true }
   kc: { value: { initial: 0.7, mid: 1.0, late: 0.7 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
@@ -214,7 +287,8 @@
 - id: pomme-de-terre
   name: Pomme de terre
   family: solanacees
-  sowDirect: { value: { from: 10, to: 18 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
+  sowDirect: { value: { from: 15, to: 18 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
   tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 130, source: "FAO-56 tableau 11, ligne Potato, May, Continental Climate, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   spacingCm: { value: { inRow: 35, betweenRows: 70 }, estimate: true }
@@ -227,8 +301,10 @@
 - id: epinard
   name: Épinard
   family: amaranthacees
+  # Aucune source regionale lue : valeur conservee, estimation.
   sowDirect: { value: { from: 36, to: 41 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
   daysToMaturity: { value: 100, source: "FAO-56 tableau 11, ligne Spinach, November, Arid Region, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  firstHarvestDays: { value: { days: 42, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/sachet-de-graines-epinard-parys-hf1-creation-vilmorin.html (Parys HF1 : '6 à 8 semaines après le semis', borne basse)", estimate: true }
   spacingCm: { value: { inRow: 10, betweenRows: 25 }, estimate: true }
   kc: { value: { initial: 0.7, mid: 1.0, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
@@ -240,6 +316,7 @@
 - id: blette
   name: Blette
   family: amaranthacees
+  # Aucune source regionale lue : valeur conservee, estimation.
   sowDirect: { value: { from: 15, to: 27 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
   spacingCm: { value: { inRow: 25, betweenRows: 40 }, estimate: true }
   frostSensitive: false
@@ -250,7 +327,9 @@
 - id: chou
   name: Chou
   family: brassicacees
+  # Aucune source regionale lue : valeur conservee, estimation.
   sowUnderCover: { value: { from: 9, to: 14 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Aucune source regionale lue : valeur conservee, estimation.
   transplant: { value: { from: 16, to: 24 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
   daysToMaturity: { value: 165, source: "FAO-56 tableau 11, ligne Cabbage, Sept, Calif. Desert, USA, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   spacingCm: { value: { inRow: 50, betweenRows: 60 }, estimate: true }
@@ -263,6 +342,7 @@
 - id: fraise
   name: Fraise
   family: rosacees
+  # Aucune source regionale lue : valeur conservee, estimation.
   transplant: { value: { from: 35, to: 41 }, estimate: true }
   tBaseC: { value: 3.9, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   spacingCm: { value: { inRow: 30, betweenRows: 40 }, estimate: true }
@@ -275,8 +355,11 @@
 - id: basilic
   name: Basilic
   family: lamiacees
-  sowUnderCover: { value: { from: 12, to: 17 }, estimate: true }
+  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
+  sowUnderCover: { value: { from: 6, to: 17 }, estimate: true, source: "from: Bordeaux au Vert, maraicher bio de Bordeaux, https://www.bordeaux-transition.org/semer-en-fevrier-sous-la-fenetre-ce-qui-leve-a-bordeaux-avant-avril/. to: estimation, aucune source" }
+  # Aucune source regionale lue : valeur conservee, estimation.
   sowDirect: { value: { from: 19, to: 24 }, estimate: true }
+  # Aucune source regionale lue : valeur conservee, estimation.
   transplant: { value: { from: 19, to: 23 }, estimate: true }
   spacingCm: { value: { inRow: 20, betweenRows: 25 }, estimate: true }
   frostSensitive: true
@@ -287,7 +370,9 @@
 - id: persil
   name: Persil
   family: apiacees
-  sowUnderCover: { value: { from: 8, to: 12 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
+  sowUnderCover: { value: { from: 6, to: 12 }, estimate: true, source: "from: Bordeaux au Vert, maraicher bio de Bordeaux, https://www.bordeaux-transition.org/semer-en-fevrier-sous-la-fenetre-ce-qui-leve-a-bordeaux-avant-avril/. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
+  # Aucune source regionale lue : valeur conservee, estimation.
   sowDirect: { value: { from: 11, to: 33 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
   spacingCm: { value: { inRow: 15, betweenRows: 25 }, estimate: true }
   frostSensitive: false
