@@ -28,7 +28,7 @@ daysToMaturity: { value: 155, source: "FAO-56 tableau 11, ligne Tomato...", esti
 | `successionDays` | intervalle de semis échelonnés |
 | `maturitySigns` | signes visuels de maturité |
 
-L'en-tête du fichier détaille les limites de chaque source. Lisez-le avant de vous en servir : aucune fenêtre n'a de source régionale complète. Pour les semis et plantations, seul le début de certaines fenêtres vient de sources girondines ou aquitaines (Jardiner Malin pour l'Aquitaine, un maraîcher bordelais), la fin reste une estimation. Les fenêtres sans source régionale gardent leur valeur d'origine, plus froide que le Médoc, avec un commentaire au-dessus. Les délais `firstHarvestDays` viennent de fiches nationales et restent des estimations.
+L'en-tête du fichier détaille les limites de chaque source. Lisez-le avant de vous en servir. Pour 15 cultures, les fenêtres de semis et de plantation viennent en entier du calendrier du livret « Graine d'assiette » du Département de la Gironde, au mois près. Ce livret pédagogique a été écrit par le Conseil départemental des jeunes, donc ces fenêtres restent des estimations. Pour d'autres, seul le début de fenêtre vient d'une source aquitaine (Jardiner Malin, un maraîcher bordelais) et la fin reste une estimation. Les fenêtres sans source régionale gardent leur valeur d'origine, plus froide que le Médoc, avec un commentaire au-dessus. Les délais `firstHarvestDays` viennent de fiches nationales et restent des estimations.
 
 ## Contribuer
 
@@ -42,6 +42,7 @@ Pour une correction ou une nouvelle région, ouvrez une pull request avec, pour 
 - CIVAM / DRAAF Auvergne-Rhône-Alpes, calendrier de semis, plantations et récoltes (référence plus froide, non adaptée au Médoc).
 - Jardiner Malin, calendrier par climat (Aquitaine) et fiches culture.
 - Bordeaux au Vert, article d'un maraîcher bio de Bordeaux sur les semis de février.
+- Conseil départemental des jeunes de la Gironde, livret « Graine d'assiette » 2016-2017, calendrier page 11.
 - Météo-France, fiche climatologique 1991-2020 de Bordeaux-Mérignac (jours de gel par mois).
 - Truffaut, fiches produit Vilmorin pour les délais de première récolte.
 

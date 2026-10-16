@@ -29,11 +29,19 @@
 # - Conseil departemental de la Gironde, livret "Graine d'assiette" 2016-2017,
 #   https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf :
 #   semis de printemps et d'ete ideal en mars, plants au potager environ deux mois plus
-#   tard, apres les dernieres gelees. Le calendrier par legume est une image illisible en
-#   texte : aucune valeur par culture n'en est tiree.
+#   tard, apres les dernieres gelees. Le calendrier par legume (p. 11) est une image : il a
+#   ete lu a l'oeil le 2026-10-17. Il donne, par mois entier, semailles, plantation, recolte
+#   et couverture plastique. Il fournit les fenetres completes de 15 cultures (17 champs).
+#   Lecture des couleurs : vert = semailles, beige = plantation a partir des semis.
+#   Semailles devient `sowDirect`, plantation devient `transplant` ; `sowUnderCover` n'en
+#   tire rien (le livret ne distingue pas abri et pleine terre). Absents du livret :
+#   courgette, courge, poireau, fraise, basilic. Limites : livret pedagogique ecrit par le
+#   Conseil departemental des jeunes, pas un document technique, et precision au mois ;
+#   ces fenetres gardent donc `estimate: true`. Il donne deux saisons de semis pour radis,
+#   epinard et laitue ; le format n'en garde qu'une, la `source` dit laquelle.
 # Chambre d'agriculture, FREDON, INRAE : aucun calendrier amateur Gironde lisible trouve.
 #
-# Ce qui reste une estimation : TOUTES les fenetres. Quand une source regionale ne donne
+# Ce qui reste une estimation : TOUTES les fenetres, y compris celles du livret. Quand une source regionale ne donne
 # que le debut de la fenetre, `from` en derive, `to` reste l'ancienne valeur, et la
 # `source` le dit ("from: ... to: ..."). Les fenetres sans source regionale gardent leur
 # valeur, un commentaire au-dessus, et `estimate: true` ; si elles citent encore le
@@ -68,8 +76,8 @@
   family: solanacees
   # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
   sowUnderCover: { value: { from: 6, to: 13 }, estimate: true, source: "from: Bordeaux au Vert, maraicher bio de Bordeaux, https://www.bordeaux-transition.org/semer-en-fevrier-sous-la-fenetre-ce-qui-leve-a-bordeaux-avant-avril/. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
-  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
-  transplant: { value: { from: 19, to: 22 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
+  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
+  transplant: { value: { from: 19, to: 36 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Tomates, plantation mai-aout" }
   tBaseC: { value: 10.0, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 155, source: "FAO-56 tableau 11, ligne Tomato, Apr/May, Calif., USA, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   spacingCm: { value: { inRow: 50, betweenRows: 70 }, estimate: true }
@@ -125,8 +133,8 @@
   sowUnderCover: { value: { from: 15, to: 19 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
   # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
   sowDirect: { value: { from: 19, to: 23 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
-  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
-  transplant: { value: { from: 19, to: 24 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
+  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
+  transplant: { value: { from: 19, to: 36 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Concombre, plantation mai-aout" }
   tBaseC: { value: 12.8, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 105, source: "FAO-56 tableau 11, ligne Cucumber, June/Aug, Arid Region, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   firstHarvestDays: { value: { days: 60, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/sachet-graines-de-concombre-breso-hf1.html (Breso HF1 : '60 jours du semis à la récolte')", estimate: true }
@@ -141,8 +149,8 @@
 - id: haricot
   name: Haricot
   family: fabacees
-  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
-  sowDirect: { value: { from: 19, to: 31 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
+  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
+  sowDirect: { value: { from: 19, to: 31 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Haricots, semailles mai-juillet" }
   tBaseC: { value: 10.0, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 90, source: "FAO-56 tableau 11, ligne Beans (green), Feb/Mar, Calif., Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   firstHarvestDays: { value: { days: 60, from: sowing }, source: "Jardiner Malin, fiche culture, https://www.jardiner-malin.fr/fiche/haricot.html ('2 à 4 mois après semis', borne basse)", estimate: true }
@@ -158,8 +166,8 @@
 - id: petit-pois
   name: Petit pois
   family: fabacees
-  # Aucune source regionale lue : valeur conservee, estimation.
-  sowDirect: { value: { from: 7, to: 16 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
+  sowDirect: { value: { from: 10, to: 31 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Pois, semailles mars-juillet" }
   tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 90, source: "FAO-56 tableau 11, ligne Peas, May, Europe, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   firstHarvestDays: { value: { days: 60, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/graines-potageres-pois-ecosser-nain-rondo-bio-681522.html (Rondo bio : 'Récolte : 60 jours après le semis')", estimate: true }
@@ -177,10 +185,10 @@
   family: asteracees
   # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
   sowUnderCover: { value: { from: 6, to: 12 }, estimate: true, source: "from: Bordeaux au Vert, maraicher bio de Bordeaux, https://www.bordeaux-transition.org/semer-en-fevrier-sous-la-fenetre-ce-qui-leve-a-bordeaux-avant-avril/. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
-  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
-  sowDirect: { value: { from: 10, to: 37 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
-  # Aucune source regionale lue : valeur conservee, estimation.
-  transplant: { value: { from: 12, to: 36 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
+  sowDirect: { value: { from: 10, to: 22 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Laitue pommee, semailles mars-mai ; la seconde fenetre d'aout n'est pas representable (une fenetre par champ)" }
+  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
+  transplant: { value: { from: 10, to: 40 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Laitue pommee, plantation mars-septembre" }
   tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 75, source: "FAO-56 tableau 11, ligne Lettuce, April, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   firstHarvestDays: { value: { days: 42, from: sowing }, source: "Jardiner Malin, fiche culture, https://www.jardiner-malin.fr/fiche/laitue.html ('Environ 6 semaines après semis')", estimate: true }
@@ -196,8 +204,8 @@
 - id: radis
   name: Radis
   family: brassicacees
-  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
-  sowDirect: { value: { from: 10, to: 38 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
+  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
+  sowDirect: { value: { from: 6, to: 18 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Radis, semailles fevrier-avril ; la seconde fenetre aout-octobre n'est pas representable (une fenetre par champ)" }
   daysToMaturity: { value: 35, source: "FAO-56 tableau 11, ligne Radish, Mar/Apr, Medit.; Europe, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   firstHarvestDays: { value: { days: 18, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/sachet-graines-radis-de-18-jours-50-gratuit.html (radis de 18 jours : '18 à 20 jours après le semis', borne basse)", estimate: true }
   spacingCm: { value: { inRow: 3, betweenRows: 15 }, estimate: true }
@@ -212,8 +220,8 @@
 - id: carotte
   name: Carotte
   family: apiacees
-  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
-  sowDirect: { value: { from: 10, to: 30 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
+  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
+  sowDirect: { value: { from: 10, to: 27 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Carotte, semailles mars-juin" }
   tBaseC: { value: 3.3, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 100, source: "FAO-56 tableau 11, ligne Carrots, Oct/Jan, Arid climate, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   firstHarvestDays: { value: { days: 90, from: sowing }, source: "Jardiner Malin, fiche culture, https://www.jardiner-malin.fr/fiche/carotte.html ('entre 3 et 6 mois après le semis', borne basse)", estimate: true }
@@ -228,8 +236,8 @@
 - id: betterave
   name: Betterave
   family: amaranthacees
-  # Aucune source regionale lue : valeur conservee, estimation.
-  sowDirect: { value: { from: 14, to: 30 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
+  sowDirect: { value: { from: 10, to: 36 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Betterave, semailles mars-aout" }
   tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 70, source: "FAO-56 tableau 11, ligne Beets, table, Apr/May, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   firstHarvestDays: { value: { days: 70, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/sachet-graines-betterave-de-detroit-2-race-preco.html (Detroit 2 : '10 à 12 semaines après semis', borne basse)", estimate: true }
@@ -259,10 +267,10 @@
   family: amaryllidacees
   # Aucune source regionale lue : valeur conservee, estimation.
   sowUnderCover: { value: { from: 3, to: 8 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
-  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
-  sowDirect: { value: { from: 10, to: 14 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
-  # Aucune source regionale lue : valeur conservee, estimation.
-  transplant: { value: { from: 10, to: 15 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
+  sowDirect: { value: { from: 10, to: 22 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Oignons, semailles mars-mai" }
+  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
+  transplant: { value: { from: 10, to: 22 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Oignons, plantation mars-mai" }
   tBaseC: { value: 1.7, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 150, source: "FAO-56 tableau 11, ligne Onion (dry), April, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   spacingCm: { value: { inRow: 10, betweenRows: 25 }, estimate: true }
@@ -275,8 +283,8 @@
 - id: ail
   name: Ail
   family: amaryllidacees
-  # Aucune source regionale lue : valeur conservee, estimation.
-  sowDirect: { value: { from: 42, to: 5 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
+  sowDirect: { value: { from: 41, to: 49 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Ail (oignonet), semailles octobre-novembre" }
   spacingCm: { value: { inRow: 10, betweenRows: 25 }, estimate: true }
   kc: { value: { initial: 0.7, mid: 1.0, late: 0.7 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
@@ -287,8 +295,8 @@
 - id: pomme-de-terre
   name: Pomme de terre
   family: solanacees
-  # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
-  sowDirect: { value: { from: 15, to: 18 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
+  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
+  sowDirect: { value: { from: 6, to: 31 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Pommes de terre, plantation fevrier-juillet, couverture plastique conseillee de fevrier a avril" }
   tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 130, source: "FAO-56 tableau 11, ligne Potato, May, Continental Climate, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   spacingCm: { value: { inRow: 35, betweenRows: 70 }, estimate: true }
@@ -301,8 +309,8 @@
 - id: epinard
   name: Épinard
   family: amaranthacees
-  # Aucune source regionale lue : valeur conservee, estimation.
-  sowDirect: { value: { from: 36, to: 41 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
+  sowDirect: { value: { from: 32, to: 40 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Epinard, semailles aout-septembre ; la fenetre fevrier-avril n'est pas representable (une fenetre par champ)" }
   daysToMaturity: { value: 100, source: "FAO-56 tableau 11, ligne Spinach, November, Arid Region, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   firstHarvestDays: { value: { days: 42, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/sachet-de-graines-epinard-parys-hf1-creation-vilmorin.html (Parys HF1 : '6 à 8 semaines après le semis', borne basse)", estimate: true }
   spacingCm: { value: { inRow: 10, betweenRows: 25 }, estimate: true }
@@ -316,8 +324,8 @@
 - id: blette
   name: Blette
   family: amaranthacees
-  # Aucune source regionale lue : valeur conservee, estimation.
-  sowDirect: { value: { from: 15, to: 27 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
+  sowDirect: { value: { from: 15, to: 36 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Bettes a cardes, semailles avril-aout" }
   spacingCm: { value: { inRow: 25, betweenRows: 40 }, estimate: true }
   frostSensitive: false
   goodCompanions: [chou]
@@ -329,8 +337,8 @@
   family: brassicacees
   # Aucune source regionale lue : valeur conservee, estimation.
   sowUnderCover: { value: { from: 9, to: 14 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
-  # Aucune source regionale lue : valeur conservee, estimation.
-  transplant: { value: { from: 16, to: 24 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
+  transplant: { value: { from: 10, to: 36 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Choux frise, blanc et rouge, plantation mars-aout" }
   daysToMaturity: { value: 165, source: "FAO-56 tableau 11, ligne Cabbage, Sept, Calif. Desert, USA, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   spacingCm: { value: { inRow: 50, betweenRows: 60 }, estimate: true }
   kc: { value: { initial: 0.7, mid: 1.05, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
@@ -372,8 +380,8 @@
   family: apiacees
   # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
   sowUnderCover: { value: { from: 6, to: 12 }, estimate: true, source: "from: Bordeaux au Vert, maraicher bio de Bordeaux, https://www.bordeaux-transition.org/semer-en-fevrier-sous-la-fenetre-ce-qui-leve-a-bordeaux-avant-avril/. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
-  # Aucune source regionale lue : valeur conservee, estimation.
-  sowDirect: { value: { from: 11, to: 33 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
+  sowDirect: { value: { from: 15, to: 36 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Persil et ciboulette, semailles avril-aout" }
   spacingCm: { value: { inRow: 15, betweenRows: 25 }, estimate: true }
   frostSensitive: false
   goodCompanions: [tomate, carotte]
