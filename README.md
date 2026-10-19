@@ -15,7 +15,7 @@ daysToMaturity: { value: 155, source: "FAO-56 tableau 11, ligne Tomato...", esti
 | Champ | Sens |
 |---|---|
 | `id`, `name`, `family` | identifiant, nom, famille botanique (pour la rotation) |
-| `sowUnderCover`, `sowDirect`, `transplant` | fenêtres en semaines ISO (`from`, `to`) ; `from > to` quand la fenêtre passe le nouvel an |
+| `sowUnderCover`, `sowDirect`, `transplant` | fenêtres en semaines ISO (`from`, `to`) ; `from > to` quand la fenêtre passe le nouvel an ; une liste de fenêtres quand la culture a deux saisons |
 | `firstHarvestDays` | délai jusqu'à la première récolte : `days` (entier) et `from` (`sowing` depuis le semis, `transplant` depuis la plantation) |
 | `tBaseC` | température de base en °C |
 | `gdd` | degrés-jours jusqu'à maturité (aucun pour l'instant) |

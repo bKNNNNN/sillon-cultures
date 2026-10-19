@@ -7,6 +7,7 @@
 #
 # Fenetres (`sowUnderCover`, `sowDirect`, `transplant`) : semaines ISO (1-53),
 # from > to autorise (passage du nouvel an).
+# Une fenetre `{ from, to }`, ou une liste de fenetres quand la culture a deux saisons.
 # Regle mois vers semaines : une source donne des mois. "Debut de mois" = semaine ISO
 # du premier lundi du mois, "fin de mois" = semaine ISO du dernier lundi du mois,
 # calculees sur 2026 (les numeros bougent d'une semaine au plus selon l'annee).
@@ -38,7 +39,7 @@
 #   courgette, courge, poireau, fraise, basilic. Limites : livret pedagogique ecrit par le
 #   Conseil departemental des jeunes, pas un document technique, et precision au mois ;
 #   ces fenetres gardent donc `estimate: true`. Il donne deux saisons de semis pour radis,
-#   epinard et laitue ; le format n'en garde qu'une, la `source` dit laquelle.
+#   epinard et laitue : le champ porte alors une liste de deux fenetres.
 # Chambre d'agriculture, FREDON, INRAE : aucun calendrier amateur Gironde lisible trouve.
 #
 # Ce qui reste une estimation : TOUTES les fenetres, y compris celles du livret. Quand une source regionale ne donne
@@ -186,7 +187,7 @@
   # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
   sowUnderCover: { value: { from: 6, to: 12 }, estimate: true, source: "from: Bordeaux au Vert, maraicher bio de Bordeaux, https://www.bordeaux-transition.org/semer-en-fevrier-sous-la-fenetre-ce-qui-leve-a-bordeaux-avant-avril/. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
   # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
-  sowDirect: { value: { from: 10, to: 22 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Laitue pommee, semailles mars-mai ; la seconde fenetre d'aout n'est pas representable (une fenetre par champ)" }
+  sowDirect: { value: [{ from: 10, to: 22 }, { from: 32, to: 36 }], estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Laitue pommee, semailles mars-mai et aout" }
   # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
   transplant: { value: { from: 10, to: 40 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Laitue pommee, plantation mars-septembre" }
   tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
@@ -205,7 +206,7 @@
   name: Radis
   family: brassicacees
   # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
-  sowDirect: { value: { from: 6, to: 18 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Radis, semailles fevrier-avril ; la seconde fenetre aout-octobre n'est pas representable (une fenetre par champ)" }
+  sowDirect: { value: [{ from: 6, to: 18 }, { from: 32, to: 44 }], estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Radis, semailles fevrier-avril et aout-octobre" }
   daysToMaturity: { value: 35, source: "FAO-56 tableau 11, ligne Radish, Mar/Apr, Medit.; Europe, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   firstHarvestDays: { value: { days: 18, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/sachet-graines-radis-de-18-jours-50-gratuit.html (radis de 18 jours : '18 à 20 jours après le semis', borne basse)", estimate: true }
   spacingCm: { value: { inRow: 3, betweenRows: 15 }, estimate: true }
@@ -310,7 +311,7 @@
   name: Épinard
   family: amaranthacees
   # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
-  sowDirect: { value: { from: 32, to: 40 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Epinard, semailles aout-septembre ; la fenetre fevrier-avril n'est pas representable (une fenetre par champ)" }
+  sowDirect: { value: [{ from: 6, to: 18 }, { from: 32, to: 40 }], estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Epinard, semailles fevrier-avril et aout-septembre" }
   daysToMaturity: { value: 100, source: "FAO-56 tableau 11, ligne Spinach, November, Arid Region, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   firstHarvestDays: { value: { days: 42, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/sachet-de-graines-epinard-parys-hf1-creation-vilmorin.html (Parys HF1 : '6 à 8 semaines après le semis', borne basse)", estimate: true }
   spacingCm: { value: { inRow: 10, betweenRows: 25 }, estimate: true }
