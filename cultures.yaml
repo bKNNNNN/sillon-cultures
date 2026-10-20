@@ -14,7 +14,8 @@
 # du premier lundi du mois, "fin de mois" = semaine ISO du dernier lundi du mois,
 # calculees sur 2026 (les numeros bougent d'une semaine au plus selon l'annee).
 # Debuts de mois utilises : fevrier S6, mars S10, avril S15, mai S19, octobre S41.
-# Fins de mois utilisees : avril S18, juin S27, aout S36, octobre S44, decembre S53.
+# Fins de mois utilisees : avril S18, juin S27, aout S36, octobre S44, decembre S52
+# (la semaine 53 n'existe pas chaque annee).
 # `sowDirect` couvre aussi la plantation de caieux (ail) et de tubercules (pomme de terre).
 #
 # Sources regionales lues pour les fenetres (aucune ne donne de fenetre complete) :
@@ -457,7 +458,7 @@
   name: Fève
   family: fabacees
   # Deux saisons : fin d'hiver partout, automne dans les regions a hiver doux, dont le Sud-Ouest selon la source.
-  sowDirect: { value: [{ from: 6, to: 18 }, { from: 41, to: 53, note: "automne, hiver doux" }], estimate: true, source: "Jardiner Malin, fiche feve, https://www.jardiner-malin.fr/fiche/feve.html ('de fevrier a avril partout en France et meme un peu plus tot, d octobre a decembre, pour les climats mediterraneens et doux en hiver' ; 'Regions a hiver doux (Midi, Sud-Ouest, Ouest) : semis des feves : automne')" }
+  sowDirect: { value: [{ from: 6, to: 18 }, { from: 41, to: 52, note: "automne, hiver doux" }], estimate: true, source: "Jardiner Malin, fiche feve, https://www.jardiner-malin.fr/fiche/feve.html ('de fevrier a avril partout en France et meme un peu plus tot, d octobre a decembre, pour les climats mediterraneens et doux en hiver' ; 'Regions a hiver doux (Midi, Sud-Ouest, Ouest) : semis des feves : automne')" }
   # Delai d'un semis de fin d'hiver. Un semis d'automne passe l'hiver et se recolte au printemps, plus tard que ce delai.
   firstHarvestDays: { value: { days: 90, from: sowing }, source: "Jardiner Malin, fiche feve, https://www.jardiner-malin.fr/fiche/feve.html ('Environ 3 a 4 mois apres le semis', borne basse)", estimate: true }
   daysToMaturity: { value: 100, source: "FAO-56 tableau 11, ligne Faba bean, broad bean, Mar/Apr, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
