@@ -45,7 +45,7 @@
 #   ces fenetres gardent donc `estimate: true`. Il donne deux saisons de semis pour radis,
 #   epinard et laitue : le champ porte alors une liste de deux fenetres.
 # Chambre d'agriculture, FREDON, INRAE : aucun calendrier amateur Gironde lisible trouve.
-# Coriandre et roquette (0.2.1) : fenetres lues sur le calendrier imprime de sachets
+# Coriandre, roquette, navet, moutarde et cerfeuil (0.2.1) : fenetres lues sur le calendrier imprime de sachets
 # Kokopelli (semencier national, mois entiers) le 2026-10-20, donc `estimate: true`.
 #
 # Ce qui reste une estimation : TOUTES les fenetres, y compris celles du livret. Quand une source regionale ne donne
@@ -78,9 +78,10 @@
 # potageres" d'Alsagarden, lu le 2026-10-20 (colonne Conservation), borne basse de la
 # fourchette. Vendeur de semences national, donc `estimate: true`. La courge prend la ligne
 # Potiron, la blette la ligne Poiree. Ail et pomme de terre se multiplient par caieux et
-# tubercules : 1 an, estimation. Fraise : aucune source lue, estimation.
+# tubercules : 1 an, estimation. Fraise et moutarde : aucune source lue, estimation.
 #
 # `aliases` : anciens identifiants d'une culture. `chou` (v0.1.0) est un alias de `chou-ete`.
+# `moutarde-japonaise`, `moutarde-indienne` et `mizuna` sont des alias de `moutarde`.
 # Aucun `gdd` : aucune source de degres-jours vers la maturite n'a ete trouvee.
 # Associations : synthese de fiches grand public (neozone.org, FREDON Auvergne-Rhone-Alpes,
 # goodfood.brussels), non sourcees valeur par valeur.
@@ -509,3 +510,42 @@
   badCompanions: []
   seedLifespanYears: { value: 4, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Roquette, 4 ans)", estimate: true }
   maturitySigns: "Feuilles de 10 à 15 cm, à cueillir avant la floraison."
+
+- id: navet
+  name: Navet
+  family: brassicacees
+  # Fenetre lue sur le calendrier imprime d'un sachet Kokopelli (semencier national, mois entiers) : estimation conservee.
+  sowDirect: { value: { from: 23, to: 40 }, estimate: true, source: "Sachet Kokopelli Navet Gilfeather, calendrier imprime (semis juin-septembre, recolte aout-decembre), lu le 2026-10-20" }
+  frostSensitive: false
+  goodCompanions: []
+  badCompanions: []
+  seedLifespanYears: { value: 4, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Navet, 4 a 5 ans, borne basse)", estimate: true }
+  maturitySigns: "Racine de 6 à 10 cm de diamètre, à récolter avant qu'elle ne devienne creuse."
+
+- id: moutarde
+  name: Moutarde
+  family: brassicacees
+  # Une seule culture pour les moutardes a feuilles : Mizuna et Red Giant en sont des varietes.
+  # `moutarde-japonaise` et `moutarde-indienne` ont existe dans l'application avant la fusion.
+  aliases: [moutarde-japonaise, moutarde-indienne, mizuna]
+  # Fenetres lues sur le calendrier imprime de sachets Kokopelli (semencier national, mois entiers) : estimation conservee.
+  sowDirect: { value: [{ from: 10, to: 18 }, { from: 32, to: 40 }], estimate: true, source: "Sachets Kokopelli Moutarde japonaise Mizuna et Moutarde indienne Red Giant, calendriers imprimes identiques (semis mars-avril et aout-septembre), lus le 2026-10-20" }
+  sowUnderCover: { value: { from: 41, to: 44 }, estimate: true, source: "Sachets Kokopelli Mizuna et Red Giant, calendriers imprimes (semis sous abri en octobre), lus le 2026-10-20" }
+  frostSensitive: false
+  goodCompanions: []
+  badCompanions: []
+  # Absente du tableau Alsagarden : aucune source lue, estimation.
+  seedLifespanYears: { value: 4, estimate: true }
+  maturitySigns: "Feuilles de 15 à 30 cm, à cueillir au fur et à mesure ou à couper au ras pour la repousse."
+
+- id: cerfeuil
+  name: Cerfeuil
+  family: apiacees
+  # Fenetres lues sur le calendrier imprime d'un sachet Kokopelli (semencier national, mois entiers) : estimation conservee.
+  sowUnderCover: { value: { from: 6, to: 9 }, estimate: true, source: "Sachet Kokopelli Cerfeuil Simple, calendrier imprime (semis sous abri en fevrier), lu le 2026-10-20" }
+  sowDirect: { value: { from: 10, to: 40 }, estimate: true, source: "Sachet Kokopelli Cerfeuil Simple, calendrier imprime (semis mars-septembre), lu le 2026-10-20" }
+  frostSensitive: false
+  goodCompanions: []
+  badCompanions: []
+  seedLifespanYears: { value: 2, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Cerfeuil, 2 a 3 ans, borne basse)", estimate: true }
+  maturitySigns: "Feuilles bien formées, à couper avant la montée en graines."
