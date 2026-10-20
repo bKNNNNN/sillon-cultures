@@ -86,7 +86,7 @@
   frostSensitive: true
   goodCompanions: [carotte, oignon, poireau, basilic, chou, persil, ail]
   badCompanions: [pomme-de-terre, betterave]
-  seedLifespanYears: { value: 5, estimate: true }
+  seedLifespanYears: { value: 3, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Tomate, 3 a 4 ans, borne basse)", estimate: true }
   maturitySigns: "Fruits bien colorés et fermes, qui se détachent facilement du pied."
 
 - id: courgette
@@ -106,6 +106,7 @@
   frostSensitive: true
   goodCompanions: [basilic]
   badCompanions: []
+  seedLifespanYears: { value: 6, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Courgette, 6 a 8 ans, borne basse)", estimate: true }
   maturitySigns: "Fruit de 15 à 20 cm, à cueillir jeune et souvent."
 
 - id: courge
@@ -124,7 +125,7 @@
   frostSensitive: true
   goodCompanions: [haricot]
   badCompanions: [pomme-de-terre]
-  seedLifespanYears: { value: 6, estimate: true }
+  seedLifespanYears: { value: 3, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (ligne Potiron, 3 a 4 ans, borne basse)", estimate: true }
   maturitySigns: "Pédoncule sec et liégeux, peau dure qui ne se raye plus à l'ongle."
 
 - id: concombre
@@ -144,7 +145,7 @@
   frostSensitive: true
   goodCompanions: [basilic, haricot]
   badCompanions: [pomme-de-terre]
-  seedLifespanYears: { value: 8, estimate: true }
+  seedLifespanYears: { value: 8, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Concombre, 8 a 10 ans, borne basse)", estimate: true }
   maturitySigns: "Fruit ferme et vert foncé, récolte avant que les graines gonflent."
 
 - id: haricot
@@ -160,7 +161,7 @@
   frostSensitive: true
   goodCompanions: [carotte, chou, fraise, salade, pomme-de-terre]
   badCompanions: [ail, oignon, poireau, petit-pois]
-  seedLifespanYears: { value: 3, estimate: true }
+  seedLifespanYears: { value: 3, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Haricots, 3 ans)", estimate: true }
   successionDays: { value: 21, estimate: true }
   maturitySigns: "Gousses fines et lisses, avant que les grains ne bombent."
 
@@ -177,7 +178,7 @@
   frostSensitive: false
   goodCompanions: [carotte, radis, salade, chou]
   badCompanions: [ail, oignon, poireau, haricot]
-  seedLifespanYears: { value: 3, estimate: true }
+  seedLifespanYears: { value: 2, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Pois, 2 a 3 ans, borne basse)", estimate: true }
   successionDays: { value: 21, estimate: true }
   maturitySigns: "Gousses bien remplies mais encore vertes et brillantes."
 
@@ -198,7 +199,7 @@
   frostSensitive: false
   goodCompanions: [carotte, radis, fraise, oignon, haricot]
   badCompanions: []
-  seedLifespanYears: { value: 3, estimate: true }
+  seedLifespanYears: { value: 4, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Laitues, 4 a 5 ans, borne basse)", estimate: true }
   successionDays: { value: 14, estimate: true }
   maturitySigns: "Pomme ferme ou rosette fournie, à cueillir avant la montée en graines."
 
@@ -214,7 +215,7 @@
   frostSensitive: false
   goodCompanions: [carotte, salade, petit-pois]
   badCompanions: []
-  seedLifespanYears: { value: 4, estimate: true }
+  seedLifespanYears: { value: 5, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Radis, 5 ans)", estimate: true }
   successionDays: { value: 14, estimate: true }
   maturitySigns: "Racine de 2 à 3 cm de diamètre, à arracher sans tarder."
 
@@ -231,6 +232,7 @@
   frostSensitive: false
   goodCompanions: [ail, oignon, poireau, tomate, radis, salade]
   badCompanions: [betterave]
+  seedLifespanYears: { value: 4, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Carotte, 4 a 5 ans, borne basse)", estimate: true }
   successionDays: { value: 21, estimate: true }
   maturitySigns: "Collet de 2 à 3 cm, couleur franche."
 
@@ -247,6 +249,7 @@
   frostSensitive: false
   goodCompanions: [oignon, chou]
   badCompanions: [tomate, carotte]
+  seedLifespanYears: { value: 6, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Betterave, 6 a 10 ans, borne basse)", estimate: true }
   successionDays: { value: 21, estimate: true }
   maturitySigns: "Racine de 5 à 8 cm de diamètre."
 
@@ -261,6 +264,7 @@
   frostSensitive: false
   goodCompanions: [carotte, fraise, tomate]
   badCompanions: [haricot, petit-pois]
+  seedLifespanYears: { value: 2, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Poireaux, 2 ans)", estimate: true }
   maturitySigns: "Fût blanc d'environ 2 cm de diamètre."
 
 - id: oignon
@@ -279,6 +283,7 @@
   frostSensitive: false
   goodCompanions: [carotte, fraise, salade, betterave, tomate]
   badCompanions: [haricot, petit-pois]
+  seedLifespanYears: { value: 2, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Oignon, 2 ans)", estimate: true }
   maturitySigns: "Feuillage jauni et couché, collet sec."
 
 - id: ail
@@ -291,6 +296,8 @@
   frostSensitive: false
   goodCompanions: [carotte, fraise, tomate, oignon]
   badCompanions: [chou, haricot, petit-pois]
+  # Multiplication par caieux, pas par graines : un lot se replante dans l'annee qui suit sa recolte.
+  seedLifespanYears: { value: 1, estimate: true }
   maturitySigns: "Feuilles jaunies sur les deux tiers, bulbe garni de caïeux."
 
 - id: pomme-de-terre
@@ -305,6 +312,8 @@
   frostSensitive: true
   goodCompanions: [haricot]
   badCompanions: [tomate, oignon, courge, concombre]
+  # Multiplication par tubercules, pas par graines : un lot se replante dans l'annee qui suit sa recolte.
+  seedLifespanYears: { value: 1, estimate: true }
   maturitySigns: "Fanes jaunies et sèches, peau qui ne s'écaille plus."
 
 - id: epinard
@@ -319,6 +328,7 @@
   frostSensitive: false
   goodCompanions: [fraise, chou]
   badCompanions: []
+  seedLifespanYears: { value: 4, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Epinards, 4 a 5 ans, borne basse)", estimate: true }
   successionDays: { value: 14, estimate: true }
   maturitySigns: "Rosette de feuilles bien développées, à cueillir avant la montée en fleurs."
 
@@ -331,6 +341,7 @@
   frostSensitive: false
   goodCompanions: [chou]
   badCompanions: []
+  seedLifespanYears: { value: 6, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (ligne Poiree, 6 ans)", estimate: true }
   maturitySigns: "Feuilles larges et côtes épaisses, cueillies par l'extérieur."
 
 - id: chou
@@ -346,6 +357,7 @@
   frostSensitive: false
   goodCompanions: [betterave, haricot, salade, petit-pois, tomate]
   badCompanions: [ail, oignon, fraise]
+  seedLifespanYears: { value: 5, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Choux, 5 a 8 ans, borne basse)", estimate: true }
   maturitySigns: "Pomme ferme et compacte sous la main."
 
 - id: fraise
@@ -359,6 +371,8 @@
   frostSensitive: false
   goodCompanions: [ail, salade, oignon, poireau, haricot]
   badCompanions: [chou]
+  # Aucune source lue pour les graines de fraisier : estimation.
+  seedLifespanYears: { value: 3, estimate: true }
   maturitySigns: "Fruit entièrement rouge, parfumé, qui se détache sans effort."
 
 - id: basilic
@@ -374,6 +388,7 @@
   frostSensitive: true
   goodCompanions: [tomate, concombre, courgette]
   badCompanions: []
+  seedLifespanYears: { value: 8, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Basilic, 8 ans)", estimate: true }
   maturitySigns: "Cueillir les sommités avant la floraison."
 
 - id: persil
@@ -387,4 +402,5 @@
   frostSensitive: false
   goodCompanions: [tomate, carotte]
   badCompanions: []
+  seedLifespanYears: { value: 2, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Persil, 2 a 3 ans, borne basse)", estimate: true }
   maturitySigns: "Feuilles bien fournies, coupées à l'extérieur."
