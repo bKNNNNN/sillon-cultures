@@ -19,7 +19,7 @@ daysToMaturity: { value: 155, source: "FAO-56 tableau 11, ligne Tomato...", esti
 | `sowUnderCover`, `sowDirect`, `transplant` | fenêtres en semaines ISO (`from`, `to`) ; `from > to` quand la fenêtre passe le nouvel an ; une liste de fenêtres quand la culture a deux saisons ; `note` qualifie une fenêtre (« sous voile ») |
 | `firstHarvestDays` | délai jusqu'à la première récolte : `days` (entier) et `from` (`sowing` depuis le semis, `transplant` depuis la plantation) ; une liste de deux délais quand la culture se sème en place ou se plante |
 | `tBaseC` | température de base en °C |
-| `gdd` | degrés-jours jusqu'à la première récolte d'une plante adulte ; pour les cultures d'automne et d'hiver, dérivés du délai du catalogue sur les normales de Bordeaux-Mérignac (`scripts/gdd.mjs`) |
+| `gdd` | degrés-jours jusqu'à la première récolte d'une plante adulte, jamais une durée de saison (voir « Contrat de `gdd` ») ; pour les cultures d'automne et d'hiver, dérivés du délai du catalogue sur les normales de Bordeaux-Mérignac (`scripts/gdd.mjs`) |
 | `daysToMaturity` | durée totale de saison FAO, pas une première récolte |
 | `spacingCm` | espacement sur le rang et entre rangs |
 | `kc` | coefficients culturaux FAO-56 (initial, mi-saison, fin) |
@@ -37,6 +37,15 @@ daysToMaturity: { value: 155, source: "FAO-56 tableau 11, ligne Tomato...", esti
 L'en-tête du fichier détaille les limites de chaque source. Lisez-le avant de vous en servir. Pour 15 cultures, les fenêtres de semis et de plantation viennent en entier du calendrier du livret « Graine d'assiette » du Département de la Gironde, au mois près. Ce livret pédagogique a été écrit par le Conseil départemental des jeunes, donc ces fenêtres restent des estimations. Pour d'autres, seul le début de fenêtre vient d'une source aquitaine (Jardiner Malin, un maraîcher bordelais) et la fin reste une estimation. Les fenêtres sans source régionale gardent leur valeur d'origine, plus froide que le Médoc, avec un commentaire au-dessus. Les délais `firstHarvestDays` viennent de fiches nationales et restent des estimations. Les durées de vie des graines viennent toutes du même tableau d'un vendeur de semences.
 
 Le fichier se valide avec [sillon-core](https://github.com/bKNNNNN/sillon-core) 0.4.0 ou plus récent : `node scripts/check.mjs <chemin vers sillon-core/dist/index.js>`. La CI le lance à chaque push. Le contrôle compare aussi chaque champ d'alerte aux tableaux sources recopiés dans `scripts/sources.mjs`, et recalcule les degrés-jours dérivés.
+
+## Contrat de `gdd`
+
+Depuis 0.4.0, `gdd` compte les degrés-jours jusqu'à la première récolte, comme `firstHarvestDays` compte des jours. Ce n'est pas une durée de saison : celle-ci reste `daysToMaturity`. Toute culture qui a `gdd` a aussi un `firstHarvestDays` depuis le semis, et `scripts/check.mjs` le vérifie. Une application qui affiche une date de première récolte et une date de fin de culture doit donc :
+
+- prendre la prévision en degrés-jours de sillon-core (`forecastHarvest`, sorte `gdd`) pour la ligne de première récolte quand la culture a `gdd`, le délai fixe (`forecastFirstHarvest`) restant le repli sans météo ;
+- ne jamais tirer la ligne de fin de culture de cette prévision : elle vient de `daysToMaturity`, et disparaît quand elle ne tombe pas après la première récolte.
+
+L'application n'affiche ainsi jamais deux dates pour la même récolte, ni une seconde date plus tôt que la première. sillon-core 0.4.0 lit encore `gdd` comme une saison dans `forecastHarvest` : c'est l'application qui fait ce tri, tant qu'une version de sillon-core ne le fait pas elle-même.
 
 ## Versions
 
