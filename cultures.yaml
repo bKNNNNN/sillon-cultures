@@ -438,6 +438,24 @@
   seedLifespanYears: { value: 5, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Choux, 5 a 8 ans, borne basse)", estimate: true }
   maturitySigns: "Pomme ferme et lourde, feuilles extérieures bien serrées."
 
+# Choux chinois a feuilles (Brassica rapa chinensis : pak choi, tatsoi) : semes en place, recoltes en six a sept
+# semaines. Classes jusqu'ici sous `chou` (chou cabus, recolte deux mois apres plantation), sans delai depuis le semis.
+# Le pe-tsai (chou chinois pomme) n'est pas couvert : plus lent, il demanderait sa propre fiche.
+- id: chou-chinois
+  name: Chou chinois
+  family: brassicacees
+  aliases: [pak-choi, pak-choy, bok-choy, tatsoi]
+  # Fenetre du pak choi, la plus prudente : semis de printemps juste apres les gelees pour limiter la montee en graines,
+  # culture d'automne conseillee. Le tatsoi se seme des mars (fiche Kokopelli L0192) : reglage de variete.
+  sowDirect: { value: { from: 19, to: 36 }, estimate: true, source: "Kokopelli, fiche Pak Choy / Prize Choy P1319, https://kokopelli-semences.fr/en/p/pak-choy-prize-choy-chinese-cabbage ('Sowing period (outdoors) : May, June, July, August' ; 'Autumn cultivation is recommended. Spring sowing is possible, provided it takes place just after the last frosts'), lue le 2026-10-20" }
+  firstHarvestDays: { value: { days: 45, from: sowing }, source: "Johnny's Selected Seeds, fiche Tatsoi organic, https://www.johnnyseeds.com/vegetables/greens/asian-greens/tatsoi-organic-asian-green-seed-2897.html ('25 baby; 45 full size', depuis la levee) ; High Mowing Seeds, fiche Prize Choy, https://www.highmowingseeds.com/organic-non-gmo-prize-choy-pac-choy-a.html ('Days to Maturity: 50 days') ; borne basse", estimate: true }
+  spacingCm: { value: { inRow: 30, betweenRows: 30 }, source: "Kokopelli, fiches Pak Choy P1319 et Tatsoi Spoon L0192, https://kokopelli-semences.fr/en/p/tatsoi-spoon-chinese-cabbage ('in clusters of 2 to 3 seeds, 30 cm apart in all directions')", estimate: true }
+  frostSensitive: false
+  goodCompanions: [salade]
+  badCompanions: [fraise]
+  seedLifespanYears: { value: 5, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (ligne Choux, 5 a 8 ans, borne basse)", estimate: true }
+  maturitySigns: "Rosette de 20 à 30 cm, feuilles tendres ; cueillir feuille à feuille ou couper le pied avant la montée en graines."
+
 - id: fraise
   name: Fraise
   family: rosacees
