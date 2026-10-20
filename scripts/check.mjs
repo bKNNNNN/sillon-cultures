@@ -23,6 +23,14 @@ const RENAMED = { chou: 'chou-ete' };
 /** Crops added after v0.1.0. */
 const ADDED_IDS = ['chou-hiver', 'feve', 'mache'];
 
+/**
+ * Quotes a review found in no source document. They must never come back as citations.
+ * Each entry: the invented text, and the crop field whose source must label the value an estimate instead.
+ */
+const RETRACTED_QUOTES = [
+  { text: 'jusque fin juin', crop: 'concombre', field: 'transplant', label: 'to: estimation' },
+];
+
 const errors = [];
 const fail = (msg) => errors.push(msg);
 
@@ -52,6 +60,11 @@ for (const crop of crops) {
   }
 }
 
+for (const { crop: id, field, label } of RETRACTED_QUOTES) {
+  const source = getCrop(crops, id)?.[field]?.source ?? '';
+  if (!source.includes(label)) fail(`${id}.${field}: source should say '${label}'`);
+}
+
 for (const name of ['cultures.yaml', 'README.md', 'CHANGELOG.md']) {
   let text = '';
   try {
@@ -60,6 +73,9 @@ for (const name of ['cultures.yaml', 'README.md', 'CHANGELOG.md']) {
     fail(`${name}: missing`);
   }
   if (text.includes('—')) fail(`${name}: contains an em dash`);
+  for (const { text: quote } of RETRACTED_QUOTES) {
+    if (text.includes(quote)) fail(`${name}: cites '${quote}', which no source contains`);
+  }
 }
 
 if (errors.length > 0) {

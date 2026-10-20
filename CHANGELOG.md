@@ -7,7 +7,7 @@ Corrections pour un potager du Médoc, d'après la revue agronomique du 2026-10-
 Fenêtres corrigées :
 
 - Tomate, plantation : semaines 19 à 25 au lieu de 19 à 36. Un plant mis en place en août ne mûrit pas avant les nuits froides.
-- Concombre, plantation : semaines 19 à 27 au lieu de 19 à 36, comme la fiche Jardiner Malin (« jusque fin juin »).
+- Concombre, plantation : semaines 19 à 27 au lieu de 19 à 36. Le début suit la fiche Jardiner Malin (« pas avant le mois de mai »). La fin de juin est une estimation : aucune source lue ne la donne.
 - Pomme de terre : trois fenêtres au lieu d'une (6 à 31). Février seulement sous voile (6 à 10), plantation principale de mi-mars à fin avril (11 à 17), plantation tardive fin juillet (27 à 30).
 - Petit pois : printemps 6 à 16 au lieu de 10 à 31, plus un semis d'automne 43 à 47 pour variété rustique.
 - Épinard : 6 à 15 et 35 à 41 au lieu de 6 à 18 et 32 à 40, pour éviter la montée en graines de mai et le sol trop chaud d'août.
