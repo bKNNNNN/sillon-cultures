@@ -10,7 +10,7 @@ import {
   TABLE22_ROW,
   fToC,
 } from './sources.mjs';
-import { deriveGdd } from './gdd.mjs';
+import { deriveGdd, mondayOfIsoWeek, referenceWeek } from './gdd.mjs';
 
 /** Crops sown in late summer or autumn whose harvest forecast must slow down with the season. */
 export const AUTUMN_IDS = [
@@ -99,7 +99,25 @@ function checkAutumn(crops, fail) {
     if (sourceOf(crop.gdd).includes('derive') && crop.gdd.value !== derived) {
       fail(`${id}: gdd ${crop.gdd.value} does not match scripts/gdd.mjs (${derived})`);
     }
+    const week = referenceWeek(crop);
+    const sown = week === null ? '?' : new Date(mondayOfIsoWeek(week)).toISOString().slice(0, 10);
+    if (sourceOf(crop.gdd).includes('derive') && !sourceOf(crop.gdd).includes(`depuis un semis le ${sown} (semaine ${week})`)) {
+      fail(`${id}.gdd: source should name the reference sowing ${sown} (semaine ${week})`);
+    }
   }
+}
+
+/**
+ * Contract with sillon-core and the app (0.4.0): every `gdd` in this file is the degree-day count to the
+ * first harvest of a sowing, never a season length. So a crop with `gdd` must have a sowing delay
+ * (`firstHarvestDays` from sowing) for the day-count fallback to agree with.
+ */
+function checkGddMeaning(crop, fail) {
+  if (!crop.gdd) return;
+  const value = crop.firstHarvestDays?.value;
+  const list = Array.isArray(value) ? value : value ? [value] : [];
+  if (!list.some((d) => d.from === 'sowing')) fail(`${crop.id}.gdd: gdd means first harvest, so firstHarvestDays from sowing is required`);
+  if (!crop.tBaseC) fail(`${crop.id}.gdd: tBaseC is required`);
 }
 
 /** Runs every alert-field rule and reports through `fail`. */
@@ -109,6 +127,7 @@ export function checkAlertFields(crops, fail) {
     checkWater(crop, fail);
     checkGerm(crop, fail);
     checkStages(crop, fail);
+    checkGddMeaning(crop, fail);
     for (const field of NEW_FIELDS) {
       if (crop[field] && crop[field].estimate !== true) fail(`${crop.id}.${field}: no source is specific to Gironde, keep estimate: true`);
     }
