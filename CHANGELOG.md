@@ -1,5 +1,17 @@
 # Journal des versions
 
+## 0.2.1
+
+Cinq cultures ajoutées, lues sur des sachets Kokopelli le 2026-10-20 :
+
+- `coriandre` (Apiacées) : semis sous abri en mars (semaines 10 à 14), semis en place d'avril à août (15 à 36).
+- `roquette` (Brassicacées) : semis en place de mars à août (10 à 36), semis sous abri en septembre (37 à 40).
+- `navet` (Brassicacées) : semis en place de juin à septembre (23 à 40), sachet Gilfeather.
+- `moutarde` (Brassicacées) : une seule culture pour les moutardes à feuilles, sachets Mizuna et Red Giant. Deux fenêtres de semis en place, mars-avril (10 à 18) et août-septembre (32 à 40), puis semis sous abri en octobre (41 à 44). Alias `moutarde-japonaise`, `moutarde-indienne` et `mizuna`.
+- `cerfeuil` (Apiacées) : semis sous abri en février (6 à 9), semis en place de mars à septembre (10 à 40).
+
+Les fenêtres reprennent le calendrier imprimé des sachets, au mois près, et gardent `estimate: true`. La durée de vie des graines vient du tableau Alsagarden déjà utilisé en 0.2.0 : coriandre 5 ans, roquette 4 ans, navet 4 ans, cerfeuil 2 ans. La moutarde est absente de ce tableau : 4 ans, estimation sans source. Aucun identifiant existant ne change.
+
 ## 0.2.0
 
 Corrections pour un potager du Médoc, d'après la revue agronomique du 2026-10-20. Il faut sillon-core 0.3.0 ou plus récent : le fichier utilise `aliases`, `note` et les listes de `firstHarvestDays`.
