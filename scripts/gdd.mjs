@@ -1,7 +1,8 @@
 // Derives a degree-day target from a day count, for crops with no degree-day source (0.4.0).
 //
-// The catalog delay (`firstHarvestDays`, from sowing) is taken to hold for a sowing in the middle of
-// the crop's first direct-sowing window, the season the seed catalogs describe. The target is the sum of
+// The catalog delay (`firstHarvestDays`, from sowing) is taken to hold for a spring sowing at the end of April
+// (ISO week 18), the season national seed catalogs describe, or for a crop sown only in autumn, for the
+// start of its window (see `referenceWeek`). The target is the sum of
 // daily degree-days over that delay, from a normal year at Bordeaux-Merignac. sillon-core then counts
 // the same target against the real weather, so a sowing in a colder season takes longer than the catalog
 // says, and a warmer one less. The result is an estimate: it only moves the catalog day count with
@@ -49,11 +50,19 @@ const sowingDelay = (crop) => {
   return list.find((d) => d.from === 'sowing')?.days ?? null;
 };
 
-/** Reference sowing week: the middle of the first `sowDirect` window, rounded down. */
+/** Spring sowing (Monday 27 April 2026, ISO week 18) for which national seed catalogs give their delays. */
+export const SPRING_REFERENCE_WEEK = 18;
+/** A first direct window opening this late (August) means a crop sown only for autumn. */
+export const AUTUMN_ONLY_FROM_WEEK = 32;
+
+/**
+ * Reference sowing week. Week 18 for every crop, except a crop sown only from August on (mache),
+ * whose catalog delay already describes autumn growth: the start of its first window.
+ */
 export function referenceWeek(crop) {
   const w = firstWindow(crop.sowDirect);
-  if (!w || w.from > w.to) return null;
-  return Math.floor((w.from + w.to) / 2);
+  if (!w) return null;
+  return w.from >= AUTUMN_ONLY_FROM_WEEK && w.from <= w.to ? w.from : SPRING_REFERENCE_WEEK;
 }
 
 /** Degree-day target, rounded to 10, or null when the crop lacks a window, a sowing delay or a base temperature. */

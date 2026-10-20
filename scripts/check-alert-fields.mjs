@@ -77,7 +77,10 @@ function checkStages(crop, fail) {
   if (got.join() !== stages.join()) fail(`${crop.id}: kcStages should be ${stages.join('/')}, got ${got.join('/')}`);
   const total = got.reduce((a, b) => a + b, 0);
   if (crop.daysToMaturity && total !== crop.daysToMaturity.value) fail(`${crop.id}: kcStages add up to ${total}, daysToMaturity is ${crop.daysToMaturity.value}`);
-  if (!sourceOf(crop.kcStages).includes('tableau 11')) fail(`${crop.id}.kcStages: source should cite FAO-56 tableau 11`);
+  const row = sourceOf(crop.daysToMaturity).match(/ligne (.*?), https/)?.[1];
+  if (!row || !sourceOf(crop.kcStages).includes(`tableau 11, ligne ${row}, `)) {
+    fail(`${crop.id}.kcStages: source should cite FAO-56 tableau 11, ligne ${row ?? '?'} (the daysToMaturity row)`);
+  }
 }
 
 function checkAutumn(crops, fail) {

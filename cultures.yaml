@@ -92,7 +92,40 @@
 # `moutarde-japonaise`, `moutarde-indienne` et `mizuna` sont des alias de `moutarde`.
 # `radis-noir`, `radis-noir-rond` et `daikon` sont des alias de `radis-hiver` ; `pak-choi`, `pak-choy`,
 # `bok-choy` et `tatsoi` sont des alias de `chou-chinois`.
-# Aucun `gdd` : aucune source de degres-jours vers la maturite n'a ete trouvee.
+#
+# `gdd` (0.4.0) : aucune source de degres-jours n'a ete trouvee pour les cultures d'automne et d'hiver. Pour
+# chou-chinois, epinard, roquette, moutarde, radis-hiver, navet, mache, blette, betterave, cerfeuil et coriandre,
+# `gdd` est donc DERIVE du delai `firstHarvestDays` par scripts/gdd.mjs : somme des degres-jours au-dessus de
+# `tBaseC` pendant ce delai, sur une annee normale de Bordeaux-Merignac (Meteo-France, normales 1991-2020,
+# temperature moyenne mensuelle placee au 15 du mois, interpolee entre deux mois), pour un semis le lundi de la
+# semaine 18 (fin avril), saison que decrivent les catalogues. La mache, semee seulement a partir d'aout, prend
+# le debut de sa fenetre (semaine 36). sillon-core compte ensuite ces degres-jours sur la meteo reelle : un semis
+# d'octobre arrive plus tard que le delai du catalogue, un semis de debut septembre a peu pres a la meme date (le
+# debut septembre est aussi chaud que mai a Merignac). La lumiere (jours courts, mi-ombre) n'est pas comptee.
+# Ici `gdd` vise la premiere recolte d'une plante adulte, pas une maturite FAO. `estimate: true` partout ;
+# scripts/check.mjs recalcule chaque valeur. `tBaseC` de ces cultures : table Purdue MRCC par analogie
+# (Brassicacees : ligne Collards ; epinard et blette : ligne Beet ; mache : ligne Lettuce ; cerfeuil et
+# coriandre : ligne Carrot). Le delai du navet (60 jours) vient d'un navet ordinaire, Vilmorin Boule de Neige.
+#
+# Champs d'alerte (0.4.0), tous `estimate: true` : aucune source n'est propre a la Gironde.
+# - `frostClass` (`tender`, `semi`, `hardy`) : NC State Extension (lu le 2026-10-20). "Frost occurs at
+#   31-33 F" abime les cultures d'ete (haricot, concombre, courges, tomate) : `tender`. Chou, blette, pois,
+#   laitue, moutarde, oignon, radis, navet "tolerate a temperature dip to [26-31 F] for a limited period", le
+#   feuillage pouvant souffrir : `hardy`, parce que sillon-core n'a pas de niveau de gelee forte (-3 C) et
+#   qu'une classe `semi` les alerterait des 2 C sous abri meteo, presque chaque nuit d'hiver. Betterave, persil,
+#   epinard "survive ... below 26 F" : `hardy`. Pomme de terre et fraise : `semi` (revue agronomique 2.2).
+#   Les cultures non citees par NCSU sont des estimations. `frostSensitive` reste pour les anciennes versions
+#   de sillon-core et suit la classe.
+# - `chillC` (basilic seul) : 5 C, estimation de la revue agronomique.
+# - `rootDepthM` et `depletionP` : FAO-56 tableau 22 (https://www.fao.org/4/x0490e/x0490e0e.htm), borne basse
+#   de la profondeur ("The smaller values for Zr may be used for irrigation scheduling"), sol sableux du Medoc.
+#   Une ligne empruntee a une autre culture le dit ("par analogie"). Basilic, persil, cerfeuil, coriandre :
+#   absents du tableau, 0.3 m et 0.30, estimation.
+# - `germSoilC` : table de Harrington (UC Davis) reproduite par Oregon State University Extension, en F,
+#   convertie en C au dixieme. Le chou n'a que min et max : l'optimum imprime "45-5" est une coquille.
+# - `kcStages` : longueurs des stades du tableau 11 de la FAO 56, meme ligne que `daysToMaturity`, donc meme
+#   total. Seulement pour les cultures qui ont `kc` et une ligne au tableau 11.
+# Les tableaux lus sont recopies dans scripts/sources.mjs ; scripts/check.mjs compare chaque valeur a la copie.
 # Associations : synthese de fiches grand public (neozone.org, FREDON Auvergne-Rhone-Alpes,
 # goodfood.brussels), non sourcees valeur par valeur.
 
@@ -109,6 +142,11 @@
   spacingCm: { value: { inRow: 50, betweenRows: 70 }, estimate: true }
   kc: { value: { initial: 0.6, mid: 1.15, late: 0.8 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: true
+  frostClass: { value: tender, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('Frost occurs at temperatures from 31-33 ºF and will result in damage or destruction of the foliage of warm season plants like beans, ..., cucumbers, ..., squash, tomatoes')", estimate: true }
+  rootDepthM: { value: 0.7, source: "FAO-56 tableau 22, ligne Tomato, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.7-1.5 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.40, source: "FAO-56 tableau 22, ligne Tomato, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
+  germSoilC: { value: { min: 10, optLow: 15.6, optHigh: 29.4, max: 35 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Tomato (50 F, optimum 60-85 F, maximum 95 F, converti en C)", estimate: true }
+  kcStages: { value: { method: fao56-table11, initDays: 35, devDays: 40, midDays: 50, lateDays: 30 }, source: "FAO-56 tableau 11, ligne Tomato, Apr/May, Calif., USA, https://www.fao.org/4/x0490e/x0490e0b.htm (meme ligne que daysToMaturity)", estimate: true }
   goodCompanions: [carotte, oignon, poireau, basilic, chou-ete, chou-hiver, persil, ail]
   badCompanions: [pomme-de-terre, betterave]
   seedLifespanYears: { value: 3, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Tomate, 3 a 4 ans, borne basse)", estimate: true }
@@ -130,6 +168,11 @@
   spacingCm: { value: { inRow: 80, betweenRows: 100 }, estimate: true }
   kc: { value: { initial: 0.5, mid: 0.95, late: 0.75 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: true
+  frostClass: { value: tender, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('Frost occurs at temperatures from 31-33 ºF and will result in damage or destruction of the foliage of warm season plants like beans, ..., cucumbers, ..., squash, tomatoes')", estimate: true }
+  rootDepthM: { value: 0.6, source: "FAO-56 tableau 22, ligne Squash, Zucchini, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.6-1.0 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.50, source: "FAO-56 tableau 22, ligne Squash, Zucchini, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
+  germSoilC: { value: { min: 15.6, optLow: 21.1, optHigh: 35, max: 37.8 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Squash (60 F, optimum 70-95 F, maximum 100 F, converti en C)", estimate: true }
+  kcStages: { value: { method: fao56-table11, initDays: 25, devDays: 35, midDays: 25, lateDays: 15 }, source: "FAO-56 tableau 11, ligne Squash, Zucchini, Apr; Dec., Medit.; Arid Reg., https://www.fao.org/4/x0490e/x0490e0b.htm (meme ligne que daysToMaturity)", estimate: true }
   goodCompanions: [basilic]
   badCompanions: []
   seedLifespanYears: { value: 6, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Courgette, 6 a 8 ans, borne basse)", estimate: true }
@@ -149,6 +192,11 @@
   spacingCm: { value: { inRow: 100, betweenRows: 150 }, estimate: true }
   kc: { value: { initial: 0.5, mid: 1.0, late: 0.8 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: true
+  frostClass: { value: tender, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('Frost occurs at temperatures from 31-33 ºF and will result in damage or destruction of the foliage of warm season plants like beans, ..., cucumbers, ..., squash, tomatoes')", estimate: true }
+  rootDepthM: { value: 1, source: "FAO-56 tableau 22, ligne Pumpkin, Winter Squash, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 1.0-1.5 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.35, source: "FAO-56 tableau 22, ligne Pumpkin, Winter Squash, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
+  germSoilC: { value: { min: 15.6, optLow: 21.1, optHigh: 32.2, max: 37.8 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Pumpkin (60 F, optimum 70-90 F, maximum 100 F, converti en C)", estimate: true }
+  kcStages: { value: { method: fao56-table11, initDays: 20, devDays: 30, midDays: 30, lateDays: 20 }, source: "FAO-56 tableau 11, ligne Pumpkin, Winter squash, Mar, Aug, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm (meme ligne que daysToMaturity)", estimate: true }
   goodCompanions: [haricot]
   badCompanions: [pomme-de-terre]
   seedLifespanYears: { value: 3, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (ligne Potiron, 3 a 4 ans, borne basse)", estimate: true }
@@ -171,6 +219,11 @@
   spacingCm: { value: { inRow: 50, betweenRows: 100 }, estimate: true }
   kc: { value: { initial: 0.6, mid: 1.0, late: 0.75 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: true
+  frostClass: { value: tender, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('Frost occurs at temperatures from 31-33 ºF and will result in damage or destruction of the foliage of warm season plants like beans, ..., cucumbers, ..., squash, tomatoes')", estimate: true }
+  rootDepthM: { value: 0.7, source: "FAO-56 tableau 22, ligne Cucumber, Fresh Market, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.7-1.2 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.50, source: "FAO-56 tableau 22, ligne Cucumber, Fresh Market, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
+  germSoilC: { value: { min: 15.6, optLow: 15.6, optHigh: 35, max: 40.6 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Cucumber (60 F, optimum 60-95 F, maximum 105 F, converti en C)", estimate: true }
+  kcStages: { value: { method: fao56-table11, initDays: 20, devDays: 30, midDays: 40, lateDays: 15 }, source: "FAO-56 tableau 11, ligne Cucumber, June/Aug, Arid Region, https://www.fao.org/4/x0490e/x0490e0b.htm (meme ligne que daysToMaturity)", estimate: true }
   goodCompanions: [basilic, haricot]
   badCompanions: [pomme-de-terre]
   seedLifespanYears: { value: 8, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Concombre, 8 a 10 ans, borne basse)", estimate: true }
@@ -187,6 +240,11 @@
   spacingCm: { value: { inRow: 10, betweenRows: 40 }, estimate: true }
   kc: { value: { initial: 0.5, mid: 1.05, late: 0.9 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: true
+  frostClass: { value: tender, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('Frost occurs at temperatures from 31-33 ºF and will result in damage or destruction of the foliage of warm season plants like beans, ..., cucumbers, ..., squash, tomatoes')", estimate: true }
+  rootDepthM: { value: 0.5, source: "FAO-56 tableau 22, ligne Beans, green, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.5-0.7 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.45, source: "FAO-56 tableau 22, ligne Beans, green, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
+  germSoilC: { value: { min: 15.6, optLow: 15.6, optHigh: 29.4, max: 35 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Bean (60 F, optimum 60-85 F, maximum 95 F, converti en C)", estimate: true }
+  kcStages: { value: { method: fao56-table11, initDays: 20, devDays: 30, midDays: 30, lateDays: 10 }, source: "FAO-56 tableau 11, ligne Beans (green), Feb/Mar, Calif., Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm (meme ligne que daysToMaturity)", estimate: true }
   goodCompanions: [carotte, chou-ete, chou-hiver, fraise, salade, pomme-de-terre]
   badCompanions: [ail, oignon, poireau, petit-pois]
   seedLifespanYears: { value: 3, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Haricots, 3 ans)", estimate: true }
@@ -205,6 +263,11 @@
   spacingCm: { value: { inRow: 5, betweenRows: 40 }, estimate: true }
   kc: { value: { initial: 0.5, mid: 1.15, late: 1.1 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
+  frostClass: { value: hardy, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('Temperatures below 26-31 ºF, cause a hard frost or freeze. Some cool season crops will tolerate a temperature dip to these temperatures for a limited period of time', liste : English peas)", estimate: true }
+  rootDepthM: { value: 0.6, source: "FAO-56 tableau 22, ligne Peas, Fresh, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.6-1.0 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.35, source: "FAO-56 tableau 22, ligne Peas, Fresh, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
+  germSoilC: { value: { min: 4.4, optLow: 4.4, optHigh: 23.9, max: 29.4 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Pea (40 F, optimum 40-75 F, maximum 85 F, converti en C)", estimate: true }
+  kcStages: { value: { method: fao56-table11, initDays: 15, devDays: 25, midDays: 35, lateDays: 15 }, source: "FAO-56 tableau 11, ligne Peas, May, Europe, https://www.fao.org/4/x0490e/x0490e0b.htm (meme ligne que daysToMaturity)", estimate: true }
   goodCompanions: [carotte, radis, salade, chou-ete, chou-hiver]
   badCompanions: [ail, oignon, poireau, haricot]
   seedLifespanYears: { value: 2, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Pois, 2 a 3 ans, borne basse)", estimate: true }
@@ -226,6 +289,11 @@
   spacingCm: { value: { inRow: 25, betweenRows: 30 }, estimate: true }
   kc: { value: { initial: 0.7, mid: 1.0, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
+  frostClass: { value: hardy, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('Temperatures below 26-31 ºF, cause a hard frost or freeze. Some cool season crops will tolerate a temperature dip to these temperatures for a limited period of time', liste : lettuce)", estimate: true }
+  rootDepthM: { value: 0.3, source: "FAO-56 tableau 22, ligne Lettuce, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.3-0.5 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.30, source: "FAO-56 tableau 22, ligne Lettuce, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
+  germSoilC: { value: { min: 1.7, optLow: 4.4, optHigh: 26.7, max: 35 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Lettuce (35 F, optimum 40-80 F, maximum 95 F, converti en C)", estimate: true }
+  kcStages: { value: { method: fao56-table11, initDays: 20, devDays: 30, midDays: 15, lateDays: 10 }, source: "FAO-56 tableau 11, ligne Lettuce, April, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm (meme ligne que daysToMaturity)", estimate: true }
   goodCompanions: [carotte, radis, fraise, oignon, haricot]
   badCompanions: []
   seedLifespanYears: { value: 4, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Laitues, 4 a 5 ans, borne basse)", estimate: true }
@@ -242,6 +310,11 @@
   spacingCm: { value: { inRow: 3, betweenRows: 15 }, estimate: true }
   kc: { value: { initial: 0.7, mid: 0.9, late: 0.85 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
+  frostClass: { value: hardy, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('Temperatures below 26-31 ºF, cause a hard frost or freeze. Some cool season crops will tolerate a temperature dip to these temperatures for a limited period of time', liste : radishes)", estimate: true }
+  rootDepthM: { value: 0.3, source: "FAO-56 tableau 22, ligne Radishes, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.3-0.5 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.30, source: "FAO-56 tableau 22, ligne Radishes, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
+  germSoilC: { value: { min: 4.4, optLow: 7.2, optHigh: 32.2, max: 35 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Radish (40 F, optimum 45-90 F, maximum 95 F, converti en C)", estimate: true }
+  kcStages: { value: { method: fao56-table11, initDays: 5, devDays: 10, midDays: 15, lateDays: 5 }, source: "FAO-56 tableau 11, ligne Radish, Mar/Apr, Medit.; Europe, https://www.fao.org/4/x0490e/x0490e0b.htm (meme ligne que daysToMaturity)", estimate: true }
   goodCompanions: [carotte, salade, petit-pois]
   badCompanions: []
   seedLifespanYears: { value: 5, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Radis, 5 ans)", estimate: true }
@@ -260,6 +333,12 @@
   firstHarvestDays: { value: { days: 70, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/vilmorin-radis-noir-bio.html (Radis Noir Gros Rond d'hiver bio : 'environ 70-80 jours après le semis', borne basse)", estimate: true }
   spacingCm: { value: { inRow: 5, betweenRows: 30 }, source: "Kokopelli, fiche Black Round P5604, https://kokopelli-semences.fr/en/p/black-round-radish ('Sow in rows 30 cm apart. Thin to 5 cm on the row')", estimate: true }
   frostSensitive: false
+  tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description, ligne Collards (40 F), par analogie : Brassicacee de saison fraiche", estimate: true }
+  gdd: { value: 960, source: "derive, scripts/gdd.mjs : 70 jours (firstHarvestDays) depuis un semis le 2026-04-27 (semaine 18), degres-jours au-dessus de tBaseC sur les normales 1991-2020 de Bordeaux-Merignac (Meteo-France, fiche 33281001, temperature moyenne mensuelle)", estimate: true }
+  frostClass: { value: hardy, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('Temperatures below 26-31 ºF, cause a hard frost or freeze. Some cool season crops will tolerate a temperature dip to these temperatures for a limited period of time', liste : radishes)", estimate: true }
+  rootDepthM: { value: 0.3, source: "FAO-56 tableau 22, ligne Radishes, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.3-0.5 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.30, source: "FAO-56 tableau 22, ligne Radishes, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
+  germSoilC: { value: { min: 4.4, optLow: 7.2, optHigh: 32.2, max: 35 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Radish (40 F, optimum 45-90 F, maximum 95 F, converti en C)", estimate: true }
   goodCompanions: [carotte, salade, petit-pois]
   badCompanions: []
   seedLifespanYears: { value: 5, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Radis, 5 ans)", estimate: true }
@@ -276,6 +355,12 @@
   spacingCm: { value: { inRow: 5, betweenRows: 25 }, estimate: true }
   kc: { value: { initial: 0.7, mid: 1.05, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
+  # Non cite par NCSU : hardy, estimation (revue agronomique 2.2).
+  frostClass: { value: hardy, estimate: true }
+  rootDepthM: { value: 0.5, source: "FAO-56 tableau 22, ligne Carrots, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.5-1.0 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.35, source: "FAO-56 tableau 22, ligne Carrots, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
+  germSoilC: { value: { min: 4.4, optLow: 7.2, optHigh: 29.4, max: 35 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Carrot (40 F, optimum 45-85 F, maximum 95 F, converti en C)", estimate: true }
+  kcStages: { value: { method: fao56-table11, initDays: 20, devDays: 30, midDays: 30, lateDays: 20 }, source: "FAO-56 tableau 11, ligne Carrots, Oct/Jan, Arid climate, https://www.fao.org/4/x0490e/x0490e0b.htm (meme ligne que daysToMaturity ; mi-saison imprimee '50/30', 30 donne le total de 100)", estimate: true }
   goodCompanions: [ail, oignon, poireau, tomate, radis, salade]
   badCompanions: [betterave]
   seedLifespanYears: { value: 4, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Carotte, 4 a 5 ans, borne basse)", estimate: true }
@@ -295,6 +380,12 @@
   spacingCm: { value: { inRow: 10, betweenRows: 30 }, estimate: true }
   kc: { value: { initial: 0.5, mid: 1.05, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
+  gdd: { value: 960, source: "derive, scripts/gdd.mjs : 70 jours (firstHarvestDays) depuis un semis le 2026-04-27 (semaine 18), degres-jours au-dessus de tBaseC sur les normales 1991-2020 de Bordeaux-Merignac (Meteo-France, fiche 33281001, temperature moyenne mensuelle)", estimate: true }
+  frostClass: { value: hardy, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('will survive even If the temperature drops below 26 ºF for an extended period of time', liste : beets)", estimate: true }
+  rootDepthM: { value: 0.6, source: "FAO-56 tableau 22, ligne Beets, table, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.6-1.0 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.50, source: "FAO-56 tableau 22, ligne Beets, table, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
+  germSoilC: { value: { min: 4.4, optLow: 10, optHigh: 29.4, max: 35 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Beet (40 F, optimum 50-85 F, maximum 95 F, converti en C)", estimate: true }
+  kcStages: { value: { method: fao56-table11, initDays: 15, devDays: 25, midDays: 20, lateDays: 10 }, source: "FAO-56 tableau 11, ligne Beets, table, Apr/May, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm (meme ligne que daysToMaturity)", estimate: true }
   goodCompanions: [oignon, chou-ete, chou-hiver]
   badCompanions: [tomate, carotte]
   seedLifespanYears: { value: 6, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Betterave, 6 a 10 ans, borne basse)", estimate: true }
@@ -312,6 +403,11 @@
   firstHarvestDays: { value: { days: 210, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/vilmorin-poireau-bleu-de-solaise.html (Bleu de Solaise : periode de semis mars a mai, periode de recolte novembre a mars)", estimate: true }
   spacingCm: { value: { inRow: 10, betweenRows: 30 }, estimate: true }
   frostSensitive: false
+  # Non cite par NCSU : hardy, estimation (revue agronomique 2.2).
+  frostClass: { value: hardy, estimate: true }
+  rootDepthM: { value: 0.3, source: "FAO-56 tableau 22, ligne Onions, dry, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.3-0.6 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling'), par analogie : Allium comme l'oignon", estimate: true }
+  depletionP: { value: 0.30, source: "FAO-56 tableau 22, ligne Onions, dry, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j), par analogie : Allium comme l'oignon", estimate: true }
+  germSoilC: { value: { min: 1.7, optLow: 10, optHigh: 35, max: 35 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Onion (35 F, optimum 50-95 F, maximum 95 F, converti en C), par analogie : Allium comme l'oignon", estimate: true }
   goodCompanions: [carotte, fraise, tomate]
   badCompanions: [haricot, petit-pois]
   seedLifespanYears: { value: 2, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Poireaux, 2 ans)", estimate: true }
@@ -331,6 +427,11 @@
   spacingCm: { value: { inRow: 10, betweenRows: 25 }, estimate: true }
   kc: { value: { initial: 0.7, mid: 1.05, late: 0.75 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
+  frostClass: { value: hardy, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('Temperatures below 26-31 ºF, cause a hard frost or freeze. Some cool season crops will tolerate a temperature dip to these temperatures for a limited period of time', liste : onion)", estimate: true }
+  rootDepthM: { value: 0.3, source: "FAO-56 tableau 22, ligne Onions, dry, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.3-0.6 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.30, source: "FAO-56 tableau 22, ligne Onions, dry, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
+  germSoilC: { value: { min: 1.7, optLow: 10, optHigh: 35, max: 35 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Onion (35 F, optimum 50-95 F, maximum 95 F, converti en C)", estimate: true }
+  kcStages: { value: { method: fao56-table11, initDays: 15, devDays: 25, midDays: 70, lateDays: 40 }, source: "FAO-56 tableau 11, ligne Onion (dry), April, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm (meme ligne que daysToMaturity)", estimate: true }
   goodCompanions: [carotte, fraise, salade, betterave, tomate]
   badCompanions: [haricot, petit-pois]
   seedLifespanYears: { value: 2, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Oignon, 2 ans)", estimate: true }
@@ -347,6 +448,10 @@
   spacingCm: { value: { inRow: 10, betweenRows: 25 }, estimate: true }
   kc: { value: { initial: 0.7, mid: 1.0, late: 0.7 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
+  # Non cite par NCSU : hardy, estimation (revue agronomique 2.2).
+  frostClass: { value: hardy, estimate: true }
+  rootDepthM: { value: 0.3, source: "FAO-56 tableau 22, ligne Garlic, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.3-0.5 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.30, source: "FAO-56 tableau 22, ligne Garlic, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
   goodCompanions: [carotte, fraise, tomate, oignon]
   badCompanions: [chou-ete, chou-hiver, haricot, petit-pois]
   # Multiplication par caieux, pas par graines : un lot se replante dans l'annee qui suit sa recolte.
@@ -364,6 +469,11 @@
   spacingCm: { value: { inRow: 35, betweenRows: 70 }, estimate: true }
   kc: { value: { initial: 0.5, mid: 1.15, late: 0.75 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: true
+  # Le feuillage gele comme celui de la tomate (NCSU) mais repart du tubercule : semi, estimation (revue agronomique 2.2).
+  frostClass: { value: semi, estimate: true }
+  rootDepthM: { value: 0.4, source: "FAO-56 tableau 22, ligne Potato, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.4-0.6 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.35, source: "FAO-56 tableau 22, ligne Potato, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
+  kcStages: { value: { method: fao56-table11, initDays: 25, devDays: 30, midDays: 45, lateDays: 30 }, source: "FAO-56 tableau 11, ligne Potato, May, Continental Climate, https://www.fao.org/4/x0490e/x0490e0b.htm (meme ligne que daysToMaturity)", estimate: true }
   goodCompanions: [haricot]
   badCompanions: [tomate, oignon, courge, concombre]
   # Multiplication par tubercules, pas par graines : un lot se replante dans l'annee qui suit sa recolte.
@@ -381,6 +491,13 @@
   spacingCm: { value: { inRow: 10, betweenRows: 25 }, estimate: true }
   kc: { value: { initial: 0.7, mid: 1.0, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
+  tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description, ligne Beet (40 F), par analogie : Amaranthacee comme la betterave", estimate: true }
+  gdd: { value: 520, source: "derive, scripts/gdd.mjs : 42 jours (firstHarvestDays) depuis un semis le 2026-04-27 (semaine 18), degres-jours au-dessus de tBaseC sur les normales 1991-2020 de Bordeaux-Merignac (Meteo-France, fiche 33281001, temperature moyenne mensuelle)", estimate: true }
+  frostClass: { value: hardy, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('will survive even If the temperature drops below 26 ºF for an extended period of time', liste : spinach)", estimate: true }
+  rootDepthM: { value: 0.3, source: "FAO-56 tableau 22, ligne Spinach, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.3-0.5 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.20, source: "FAO-56 tableau 22, ligne Spinach, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
+  germSoilC: { value: { min: 1.7, optLow: 7.2, optHigh: 23.9, max: 29.4 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Spinach (35 F, optimum 45-75 F, maximum 85 F, converti en C)", estimate: true }
+  kcStages: { value: { method: fao56-table11, initDays: 20, devDays: 30, midDays: 40, lateDays: 10 }, source: "FAO-56 tableau 11, ligne Spinach, November, Arid Region, https://www.fao.org/4/x0490e/x0490e0b.htm (meme ligne que daysToMaturity)", estimate: true }
   goodCompanions: [fraise, chou-ete, chou-hiver]
   badCompanions: []
   seedLifespanYears: { value: 4, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Epinards, 4 a 5 ans, borne basse)", estimate: true }
@@ -398,6 +515,12 @@
   firstHarvestDays: { value: { days: 60, from: sowing }, source: "Jardiner Malin, fiche poiree, https://www.jardiner-malin.fr/fiche/poiree.html ('La récolte commence environ deux mois après le semis')", estimate: true }
   spacingCm: { value: { inRow: 30, betweenRows: 40 }, source: "Kokopelli, fiches blettes P2005, L0425 et P2012 ('transplant with the root ball at 30 cm intervals. For direct sowing, sow in rows 40 cm apart ... thin out to 30 cm')", estimate: true }
   frostSensitive: false
+  tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description, ligne Beet (40 F), meme espece (Beta vulgaris)", estimate: true }
+  gdd: { value: 800, source: "derive, scripts/gdd.mjs : 60 jours (firstHarvestDays) depuis un semis le 2026-04-27 (semaine 18), degres-jours au-dessus de tBaseC sur les normales 1991-2020 de Bordeaux-Merignac (Meteo-France, fiche 33281001, temperature moyenne mensuelle)", estimate: true }
+  frostClass: { value: hardy, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('Temperatures below 26-31 ºF, cause a hard frost or freeze. Some cool season crops will tolerate a temperature dip to these temperatures for a limited period of time', liste : chard)", estimate: true }
+  rootDepthM: { value: 0.3, source: "FAO-56 tableau 22, ligne Spinach, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.3-0.5 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling'), par analogie : Amaranthacee a feuilles comme l'epinard", estimate: true }
+  depletionP: { value: 0.20, source: "FAO-56 tableau 22, ligne Spinach, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j), par analogie : Amaranthacee a feuilles comme l'epinard", estimate: true }
+  germSoilC: { value: { min: 4.4, optLow: 10, optHigh: 29.4, max: 35 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Chard, Swiss (40 F, optimum 50-85 F, maximum 95 F, converti en C)", estimate: true }
   goodCompanions: [chou-ete, chou-hiver]
   badCompanions: []
   seedLifespanYears: { value: 6, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (ligne Poiree, 6 ans)", estimate: true }
@@ -418,6 +541,11 @@
   spacingCm: { value: { inRow: 50, betweenRows: 60 }, estimate: true }
   kc: { value: { initial: 0.7, mid: 1.05, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
+  frostClass: { value: hardy, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('Temperatures below 26-31 ºF, cause a hard frost or freeze. Some cool season crops will tolerate a temperature dip to these temperatures for a limited period of time', liste : cabbage)", estimate: true }
+  rootDepthM: { value: 0.5, source: "FAO-56 tableau 22, ligne Cabbage, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.5-0.8 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.45, source: "FAO-56 tableau 22, ligne Cabbage, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
+  germSoilC: { value: { min: 4.4, max: 37.8 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Cabbage (minimum 40 F, maximum 100 F, converti en C ; l'optimum imprime '45-5' est une coquille, non repris)", estimate: true }
+  kcStages: { value: { method: fao56-table11, initDays: 40, devDays: 60, midDays: 50, lateDays: 15 }, source: "FAO-56 tableau 11, ligne Cabbage, Sept, Calif. Desert, USA, https://www.fao.org/4/x0490e/x0490e0b.htm (meme ligne que daysToMaturity)", estimate: true }
   goodCompanions: [betterave, haricot, salade, petit-pois, tomate]
   badCompanions: [ail, oignon, fraise]
   seedLifespanYears: { value: 5, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Choux, 5 a 8 ans, borne basse)", estimate: true }
@@ -435,6 +563,11 @@
   spacingCm: { value: { inRow: 50, betweenRows: 60 }, estimate: true }
   kc: { value: { initial: 0.7, mid: 1.05, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
+  frostClass: { value: hardy, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('Temperatures below 26-31 ºF, cause a hard frost or freeze. Some cool season crops will tolerate a temperature dip to these temperatures for a limited period of time', liste : cabbage)", estimate: true }
+  rootDepthM: { value: 0.5, source: "FAO-56 tableau 22, ligne Cabbage, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.5-0.8 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.45, source: "FAO-56 tableau 22, ligne Cabbage, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
+  germSoilC: { value: { min: 4.4, max: 37.8 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Cabbage (minimum 40 F, maximum 100 F, converti en C ; l'optimum imprime '45-5' est une coquille, non repris)", estimate: true }
+  kcStages: { value: { method: fao56-table11, initDays: 40, devDays: 60, midDays: 50, lateDays: 15 }, source: "FAO-56 tableau 11, ligne Cabbage, Sept, Calif. Desert, USA, https://www.fao.org/4/x0490e/x0490e0b.htm (meme ligne que daysToMaturity)", estimate: true }
   goodCompanions: [betterave, haricot, salade, petit-pois]
   badCompanions: [ail, oignon, fraise]
   seedLifespanYears: { value: 5, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Choux, 5 a 8 ans, borne basse)", estimate: true }
@@ -453,6 +586,13 @@
   firstHarvestDays: { value: { days: 45, from: sowing }, source: "Johnny's Selected Seeds, fiche Tatsoi organic, https://www.johnnyseeds.com/vegetables/greens/asian-greens/tatsoi-organic-asian-green-seed-2897.html ('25 baby; 45 full size', depuis la levee) ; High Mowing Seeds, fiche Prize Choy, https://www.highmowingseeds.com/organic-non-gmo-prize-choy-pac-choy-a.html ('Days to Maturity: 50 days') ; borne basse", estimate: true }
   spacingCm: { value: { inRow: 30, betweenRows: 30 }, source: "Kokopelli, fiches Pak Choy P1319 et Tatsoi Spoon L0192, https://kokopelli-semences.fr/en/p/tatsoi-spoon-chinese-cabbage ('in clusters of 2 to 3 seeds, 30 cm apart in all directions')", estimate: true }
   frostSensitive: false
+  tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description, ligne Collards (40 F), par analogie : Brassicacee de saison fraiche", estimate: true }
+  gdd: { value: 560, source: "derive, scripts/gdd.mjs : 45 jours (firstHarvestDays) depuis un semis le 2026-04-27 (semaine 18), degres-jours au-dessus de tBaseC sur les normales 1991-2020 de Bordeaux-Merignac (Meteo-France, fiche 33281001, temperature moyenne mensuelle)", estimate: true }
+  # Non cite par NCSU : hardy, estimation (revue agronomique 2.2).
+  frostClass: { value: hardy, estimate: true }
+  rootDepthM: { value: 0.3, source: "FAO-56 tableau 22, ligne Lettuce, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.3-0.5 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling'), par analogie : petite culture a feuilles recoltee jeune, comme la laitue", estimate: true }
+  depletionP: { value: 0.30, source: "FAO-56 tableau 22, ligne Lettuce, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j), par analogie : petite culture a feuilles recoltee jeune, comme la laitue", estimate: true }
+  germSoilC: { value: { min: 4.4, optLow: 15.6, optHigh: 40.6, max: 40.6 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Turnip (40 F, optimum 60-105 F, maximum 105 F, converti en C), par analogie : Brassica rapa, meme espece que le navet", estimate: true }
   goodCompanions: [salade]
   badCompanions: [fraise]
   seedLifespanYears: { value: 5, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (ligne Choux, 5 a 8 ans, borne basse)", estimate: true }
@@ -469,6 +609,10 @@
   spacingCm: { value: { inRow: 30, betweenRows: 40 }, estimate: true }
   kc: { value: { initial: 0.4, mid: 0.85, late: 0.75 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
+  # Seule la fleur craint une gelee legere : semi, estimation (revue agronomique 2.2).
+  frostClass: { value: semi, estimate: true }
+  rootDepthM: { value: 0.2, source: "FAO-56 tableau 22, ligne Strawberries, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.2-0.3 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.20, source: "FAO-56 tableau 22, ligne Strawberries, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
   goodCompanions: [ail, salade, oignon, poireau, haricot]
   badCompanions: [chou-ete, chou-hiver]
   # Aucune source lue pour les graines de fraisier : estimation.
@@ -487,6 +631,15 @@
   firstHarvestDays: { value: { days: 60, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/vilmorin-basilic-genovese-bio.html (Genovese bio : 'Période de récolte 60-75 jours après semis', borne basse)", estimate: true }
   spacingCm: { value: { inRow: 20, betweenRows: 25 }, estimate: true }
   frostSensitive: true
+  # Basilic : non cite par NCSU, culture d'origine tropicale abimee par une gelee legere (revue agronomique 2.2), estimation.
+  frostClass: { value: tender, estimate: true }
+  # Nuit froide pour un jeune plant : 5 C, estimation (revue agronomique 2.2). Frontiers in Plant Science 2023
+  # (https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2023.1237577/full) donne une lesion grave
+  # sous 10 C pour des feuilles coupees en stockage, pas pour un plant en terre : ce n'est pas la source de la valeur.
+  chillC: { value: 5, estimate: true }
+  # Absent du tableau 22 de la FAO-56 : 0.3 m et 0.30, estimation (revue agronomique 4.1).
+  rootDepthM: { value: 0.3, estimate: true }
+  depletionP: { value: 0.30, estimate: true }
   goodCompanions: [tomate, concombre, courgette]
   badCompanions: []
   seedLifespanYears: { value: 8, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Basilic, 8 ans)", estimate: true }
@@ -502,6 +655,11 @@
   firstHarvestDays: { value: { days: 42, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/vilmorin-persil-vert-frise-bio.html (persil vert frise bio : 'Période de récolte 6-8 semaines après semis', borne basse)", estimate: true }
   spacingCm: { value: { inRow: 15, betweenRows: 25 }, estimate: true }
   frostSensitive: false
+  frostClass: { value: hardy, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('will survive even If the temperature drops below 26 ºF for an extended period of time', liste : parsley)", estimate: true }
+  # Absent du tableau 22 de la FAO-56 : 0.3 m et 0.30, estimation (revue agronomique 4.1).
+  rootDepthM: { value: 0.3, estimate: true }
+  depletionP: { value: 0.30, estimate: true }
+  germSoilC: { value: { min: 4.4, optLow: 10, optHigh: 29.4, max: 32.2 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Parsley (40 F, optimum 50-85 F, maximum 90 F, converti en C)", estimate: true }
   goodCompanions: [tomate, carotte]
   badCompanions: []
   seedLifespanYears: { value: 2, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Persil, 2 a 3 ans, borne basse)", estimate: true }
@@ -518,6 +676,11 @@
   kc: { value: { initial: 0.5, mid: 1.15, late: 1.1 }, source: "FAO-56 tableau 12, ligne Fababean (broad bean) - Fresh, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   spacingCm: { value: { inRow: 15, betweenRows: 50 }, estimate: true }
   frostSensitive: false
+  # Non cite par NCSU : hardy, estimation (revue agronomique 2.2).
+  frostClass: { value: hardy, estimate: true }
+  rootDepthM: { value: 0.5, source: "FAO-56 tableau 22, ligne Fababean, Fresh, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.5-0.7 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.45, source: "FAO-56 tableau 22, ligne Fababean, Fresh, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
+  kcStages: { value: { method: fao56-table11, initDays: 20, devDays: 30, midDays: 35, lateDays: 15 }, source: "FAO-56 tableau 11, ligne Faba bean, broad bean, Mar/Apr, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm (meme ligne que daysToMaturity)", estimate: true }
   goodCompanions: []
   badCompanions: [ail, oignon, poireau]
   seedLifespanYears: { value: 5, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Feves, 5 a 6 ans, borne basse)", estimate: true }
@@ -531,6 +694,12 @@
   firstHarvestDays: { value: { days: 60, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/vilmorin-mache-a-grosse-graine.html (Mache a grosse graine : 'La recolte intervient 60 a 80 jours apres le semis', borne basse)", estimate: true }
   spacingCm: { value: { inRow: 10, betweenRows: 20 }, estimate: true }
   frostSensitive: false
+  tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description, ligne Lettuce (40 F), par analogie : salade d'hiver", estimate: true }
+  gdd: { value: 750, source: "derive, scripts/gdd.mjs : 60 jours (firstHarvestDays) depuis un semis le 2026-08-31 (semaine 36), degres-jours au-dessus de tBaseC sur les normales 1991-2020 de Bordeaux-Merignac (Meteo-France, fiche 33281001, temperature moyenne mensuelle)", estimate: true }
+  # Non cite par NCSU : hardy, estimation (revue agronomique 2.2).
+  frostClass: { value: hardy, estimate: true }
+  rootDepthM: { value: 0.3, source: "FAO-56 tableau 22, ligne Lettuce, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.3-0.5 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling'), par analogie : petite culture a feuilles, comme la laitue", estimate: true }
+  depletionP: { value: 0.30, source: "FAO-56 tableau 22, ligne Lettuce, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j), par analogie : petite culture a feuilles, comme la laitue", estimate: true }
   goodCompanions: []
   badCompanions: []
   seedLifespanYears: { value: 4, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Maches, 4 a 5 ans, borne basse)", estimate: true }
@@ -548,6 +717,13 @@
   firstHarvestDays: { value: { days: 50, from: sowing }, source: "Johnny's Selected Seeds, fiche Santo, https://www.johnnyseeds.com/herbs/cilantro-coriander/santo-cilantro-coriander-seed-919.html ('50-55 to leaf harvest', compte depuis le semis, borne basse)", estimate: true }
   spacingCm: { value: { inRow: 15, betweenRows: 15 }, source: "Kokopelli, fiche Coriander C0167, https://kokopelli-semences.fr/en/p/coriander ('sow in rows 15 cm apart. Thin to 15 cm')", estimate: true }
   frostSensitive: false
+  tBaseC: { value: 3.3, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description, ligne Carrot (38 F), par analogie : Apiacee comme la carotte", estimate: true }
+  gdd: { value: 700, source: "derive, scripts/gdd.mjs : 50 jours (firstHarvestDays) depuis un semis le 2026-04-27 (semaine 18), degres-jours au-dessus de tBaseC sur les normales 1991-2020 de Bordeaux-Merignac (Meteo-France, fiche 33281001, temperature moyenne mensuelle)", estimate: true }
+  # Non cite par NCSU : hardy, estimation (revue agronomique 2.2).
+  frostClass: { value: hardy, estimate: true }
+  # Absent du tableau 22 de la FAO-56 : 0.3 m et 0.30, estimation (revue agronomique 4.1).
+  rootDepthM: { value: 0.3, estimate: true }
+  depletionP: { value: 0.30, estimate: true }
   goodCompanions: []
   badCompanions: []
   seedLifespanYears: { value: 5, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Coriandre, 5 a 6 ans, borne basse)", estimate: true }
@@ -563,6 +739,13 @@
   spacingCm: { value: { inRow: 7, betweenRows: 20 }, source: "Kokopelli, fiche Arugula P5700, https://kokopelli-semences.fr/en/p/arugula ('in rows 20 cm apart ... Thin to 7 or 8 cm along the rows', borne basse)", estimate: true }
   successionDays: { value: 15, source: "Kokopelli, fiche Arugula P5700, https://kokopelli-semences.fr/en/p/arugula ('Sow every 15 days to stagger harvests')", estimate: true }
   frostSensitive: false
+  tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description, ligne Collards (40 F), par analogie : Brassicacee de saison fraiche", estimate: true }
+  gdd: { value: 490, source: "derive, scripts/gdd.mjs : 40 jours (firstHarvestDays) depuis un semis le 2026-04-27 (semaine 18), degres-jours au-dessus de tBaseC sur les normales 1991-2020 de Bordeaux-Merignac (Meteo-France, fiche 33281001, temperature moyenne mensuelle)", estimate: true }
+  # Non cite par NCSU : hardy, estimation (revue agronomique 2.2).
+  frostClass: { value: hardy, estimate: true }
+  rootDepthM: { value: 0.3, source: "FAO-56 tableau 22, ligne Lettuce, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.3-0.5 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling'), par analogie : petite culture a feuilles, comme la laitue", estimate: true }
+  depletionP: { value: 0.30, source: "FAO-56 tableau 22, ligne Lettuce, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j), par analogie : petite culture a feuilles, comme la laitue", estimate: true }
+  germSoilC: { value: { min: 4.4, max: 37.8 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Cabbage (minimum 40 F, maximum 100 F, converti en C ; l'optimum imprime '45-5' est une coquille, non repris), par analogie : Brassicacee comme le chou", estimate: true }
   goodCompanions: []
   badCompanions: []
   seedLifespanYears: { value: 4, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Roquette, 4 ans)", estimate: true }
@@ -573,10 +756,17 @@
   family: brassicacees
   # Fenetre lue sur le calendrier imprime d'un sachet Kokopelli (semencier national, mois entiers) : estimation conservee.
   sowDirect: { value: { from: 23, to: 40 }, estimate: true, source: "Sachet Kokopelli Navet Gilfeather, calendrier imprime (semis juin-septembre, recolte aout-decembre), lu le 2026-10-20 ; Kokopelli, fiche Gilfeather P5411, https://kokopelli-semences.fr/en/p/gilfeather-turnip ('Sowing period (outdoors) : June, July, August, September')" }
-  # Aucun delai generique lu : Gilfeather (75 a 90 jours) est un croisement navet-rutabaga plus lent qu'un navet ordinaire,
-  # son delai releve d'une fiche variete, pas de la culture.
+  # Delai de la culture (0.4.0) : un navet ordinaire, Vilmorin Boule de Neige. Gilfeather (75 a 90 jours) est un croisement
+  # navet-rutabaga plus lent : son delai releve d'une fiche variete, pas de la culture.
   spacingCm: { value: { inRow: 10, betweenRows: 25 }, source: "Kokopelli, fiche Gilfeather P5411, https://kokopelli-semences.fr/en/p/gilfeather-turnip ('in rows 25-30 cm apart ... Thin to 10 cm', borne basse)", estimate: true }
   frostSensitive: false
+  firstHarvestDays: { value: { days: 60, from: sowing }, source: "Vilmorin, navet Boule de Neige, fiche produit vendue par Bricomarche, https://www.bricomarche.com/p/navet-legume-rond-boule-de-neige-vilmorin/3182670247415 ('Cycle de croissance : 60-80 jours (selon la saison)', borne basse)", estimate: true }
+  tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description, ligne Collards (40 F), par analogie : Brassicacee de saison fraiche", estimate: true }
+  gdd: { value: 800, source: "derive, scripts/gdd.mjs : 60 jours (firstHarvestDays) depuis un semis le 2026-04-27 (semaine 18), degres-jours au-dessus de tBaseC sur les normales 1991-2020 de Bordeaux-Merignac (Meteo-France, fiche 33281001, temperature moyenne mensuelle)", estimate: true }
+  frostClass: { value: hardy, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('Temperatures below 26-31 ºF, cause a hard frost or freeze. Some cool season crops will tolerate a temperature dip to these temperatures for a limited period of time', liste : turnips)", estimate: true }
+  rootDepthM: { value: 0.5, source: "FAO-56 tableau 22, ligne Turnip (and Rutabaga), https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.5-1.0 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
+  depletionP: { value: 0.50, source: "FAO-56 tableau 22, ligne Turnip (and Rutabaga), https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
+  germSoilC: { value: { min: 4.4, optLow: 15.6, optHigh: 40.6, max: 40.6 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Turnip (40 F, optimum 60-105 F, maximum 105 F, converti en C)", estimate: true }
   goodCompanions: []
   badCompanions: []
   seedLifespanYears: { value: 4, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Navet, 4 a 5 ans, borne basse)", estimate: true }
@@ -595,6 +785,12 @@
   firstHarvestDays: { value: { days: 40, from: sowing }, source: "Johnny's Selected Seeds, fiche Mizuna organic, https://www.johnnyseeds.com/vegetables/greens/asian-greens/mizuna-organic-asian-green-seed-2883.html ('18 baby; 40 full size', 'From emergence after direct seeding') et fiche Red Giant organic, https://www.johnnyseeds.com/vegetables/greens/mustard-greens/red-giant-organic-mustard-green-seed-2884.html ('21 baby; 45 full size')", estimate: true }
   spacingCm: { value: { inRow: 30, betweenRows: 30 }, source: "Kokopelli, fiches Mizuna P4423 et Red Giant P4400 ('sow lightly, in rows 30 cm apart ... thin to 30 cm')", estimate: true }
   frostSensitive: false
+  tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description, ligne Collards (40 F), par analogie : Brassicacee de saison fraiche", estimate: true }
+  gdd: { value: 490, source: "derive, scripts/gdd.mjs : 40 jours (firstHarvestDays) depuis un semis le 2026-04-27 (semaine 18), degres-jours au-dessus de tBaseC sur les normales 1991-2020 de Bordeaux-Merignac (Meteo-France, fiche 33281001, temperature moyenne mensuelle)", estimate: true }
+  frostClass: { value: hardy, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('Temperatures below 26-31 ºF, cause a hard frost or freeze. Some cool season crops will tolerate a temperature dip to these temperatures for a limited period of time', liste : mustard)", estimate: true }
+  rootDepthM: { value: 0.3, source: "FAO-56 tableau 22, ligne Lettuce, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.3-0.5 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling'), par analogie : petite culture a feuilles, comme la laitue", estimate: true }
+  depletionP: { value: 0.30, source: "FAO-56 tableau 22, ligne Lettuce, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j), par analogie : petite culture a feuilles, comme la laitue", estimate: true }
+  germSoilC: { value: { min: 4.4, max: 37.8 }, source: "Harrington (UC Davis) via Oregon State University Extension, https://extension.oregonstate.edu/gardening/soil-compost/soil-temperature-conditions-vegetable-seed-germination, ligne Cabbage (minimum 40 F, maximum 100 F, converti en C ; l'optimum imprime '45-5' est une coquille, non repris), par analogie : Brassicacee comme le chou", estimate: true }
   goodCompanions: []
   badCompanions: []
   # Absente du tableau Alsagarden : aucune source lue, estimation.
@@ -611,6 +807,13 @@
   firstHarvestDays: { value: { days: 60, from: sowing }, source: "Johnny's Selected Seeds, fiche Vertissimo, https://www.johnnyseeds.com/herbs/herbs-for-salad-mix/vertissimo-chervil-seed-2441.html ('60 days', compte depuis le semis)", estimate: true }
   spacingCm: { value: { inRow: 10, betweenRows: 20 }, source: "Kokopelli, fiche Simple A0166, https://kokopelli-semences.fr/en/p/simple-chervil ('in rows 20 cm apart ... Thin to 10 cm')", estimate: true }
   frostSensitive: false
+  tBaseC: { value: 3.3, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description, ligne Carrot (38 F), par analogie : Apiacee comme la carotte", estimate: true }
+  gdd: { value: 860, source: "derive, scripts/gdd.mjs : 60 jours (firstHarvestDays) depuis un semis le 2026-04-27 (semaine 18), degres-jours au-dessus de tBaseC sur les normales 1991-2020 de Bordeaux-Merignac (Meteo-France, fiche 33281001, temperature moyenne mensuelle)", estimate: true }
+  # Non cite par NCSU : hardy, estimation (revue agronomique 2.2).
+  frostClass: { value: hardy, estimate: true }
+  # Absent du tableau 22 de la FAO-56 : 0.3 m et 0.30, estimation (revue agronomique 4.1).
+  rootDepthM: { value: 0.3, estimate: true }
+  depletionP: { value: 0.30, estimate: true }
   goodCompanions: []
   badCompanions: []
   seedLifespanYears: { value: 2, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Cerfeuil, 2 a 3 ans, borne basse)", estimate: true }
