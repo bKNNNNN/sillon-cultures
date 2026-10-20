@@ -1,5 +1,25 @@
 # Journal des versions
 
+## 0.4.0
+
+Champs pour les alertes (gel, arrosage, température du sol) et prévisions d'automne qui ralentissent avec la saison. Il faut sillon-core 0.4.0 ou plus récent : les versions précédentes refusent ces champs. Aucun identifiant ne change. Toutes les valeurs ajoutées portent `estimate: true`, aucune source n'étant propre à la Gironde.
+
+Champs d'alerte, pour les 30 cultures :
+
+- `frostClass`. `tender` pour tomate, courgette, courge, concombre, haricot et basilic : une gelée légère abîme leur feuillage (NC State Extension). `semi` pour la pomme de terre, qui repart du tubercule, et la fraise, dont seule la fleur craint le gel. `hardy` pour les autres. Chou, blette, pois, laitue, moutarde, oignon, radis et navet supportent une gelée forte brève avec un feuillage parfois abîmé ; ils restent `hardy` pour ne pas recevoir une alerte presque chaque nuit d'hiver. `frostSensitive` est inchangé.
+- `chillC` : 5 °C pour le basilic (nuit froide pour un jeune plant), estimation.
+- `rootDepthM` et `depletionP` : FAO-56 tableau 22, borne basse de la profondeur racinaire, pour un sol sableux. Avec 0,08 m³/m³ d'eau utile, la tomate a une réserve facilement utilisable de 20,7 mm et la laitue de 7,2 mm pour une ETc de 5,75 et 5 mm/j. Poireau, blette, chou chinois, mâche, roquette et moutarde empruntent la ligne d'une culture voisine, et leur source le dit. Basilic, persil, cerfeuil et coriandre : 0,3 m et 0,30, estimation.
+- `germSoilC` pour 22 cultures : table de Harrington, convertie de °F en °C. Le chou n'a que le minimum et le maximum, l'optimum imprimé étant une coquille.
+- `kcStages` pour 16 cultures : longueurs des stades du tableau 11 de la FAO 56, sur la ligne que `daysToMaturity` cite déjà.
+
+Prévisions d'automne :
+
+- Chou chinois, épinard, roquette, moutarde, radis d'hiver, navet, mâche, blette, betterave, cerfeuil et coriandre ont maintenant `tBaseC` et `gdd`. Aucune source de degrés-jours n'existe pour elles : `gdd` est calculé à partir de leur délai de première récolte, sur une année normale à Bordeaux-Mérignac, pour un semis de fin avril (`scripts/gdd.mjs`). sillon-core compte ensuite ces degrés-jours sur la météo réelle. Un chou chinois semé le 8 septembre reste annoncé vers le 24 octobre, mais semé le 1er octobre il passe du 15 novembre (délai fixe) à la mi-décembre. Un radis d'hiver semé le 8 septembre passe du 17 novembre à la mi-janvier. La lumière (jours courts, mi-ombre) n'est pas comptée.
+- Pour ces cultures, la prévision de récolte de sillon-core vise la première récolte d'une plante adulte et non plus la durée de saison FAO (`daysToMaturity`).
+- Navet : premier délai de culture, 60 jours, d'après la fiche Vilmorin du navet Boule de Neige (« 60-80 jours selon la saison », borne basse).
+
+Contrôle : `scripts/check.mjs` compare chaque nouveau champ aux tableaux sources recopiés dans `scripts/sources.mjs` et recalcule chaque `gdd` dérivé. La CI construit sillon-core v0.4.0.
+
 ## 0.3.0
 
 Audit des 19 sachets du propriétaire, le 2026-10-20 : chaque calendrier imprimé a été relu sur la photo, puis comparé à la fiche produit Kokopelli de la variété et à une fiche de semencier indépendante. Aucun identifiant existant ne change.

@@ -9,7 +9,7 @@ permissions:
 
 env:
   # sillon-core release whose parseCrops must accept cultures.yaml.
-  SILLON_CORE_REF: v0.3.0
+  SILLON_CORE_REF: v0.4.0
 
 jobs:
   parse:
