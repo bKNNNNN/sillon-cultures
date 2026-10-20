@@ -1,5 +1,14 @@
 # Journal des versions
 
+## 0.2.1
+
+Deux cultures ajoutées, lues sur des sachets Kokopelli le 2026-10-20 :
+
+- `coriandre` (Apiacées) : semis sous abri en mars (semaines 10 à 14), semis en place d'avril à août (15 à 36).
+- `roquette` (Brassicacées) : semis en place de mars à août (10 à 36), semis sous abri en septembre (37 à 40).
+
+Les fenêtres reprennent le calendrier imprimé des sachets, au mois près, et gardent `estimate: true`. La durée de vie des graines vient du tableau Alsagarden déjà utilisé en 0.2.0 : coriandre 5 ans, roquette 4 ans. Aucun identifiant existant ne change.
+
 ## 0.2.0
 
 Corrections pour un potager du Médoc, d'après la revue agronomique du 2026-10-20. Il faut sillon-core 0.3.0 ou plus récent : le fichier utilise `aliases`, `note` et les listes de `firstHarvestDays`.

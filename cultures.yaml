@@ -45,6 +45,8 @@
 #   ces fenetres gardent donc `estimate: true`. Il donne deux saisons de semis pour radis,
 #   epinard et laitue : le champ porte alors une liste de deux fenetres.
 # Chambre d'agriculture, FREDON, INRAE : aucun calendrier amateur Gironde lisible trouve.
+# Coriandre et roquette (0.2.1) : fenetres lues sur le calendrier imprime de sachets
+# Kokopelli (semencier national, mois entiers) le 2026-10-20, donc `estimate: true`.
 #
 # Ce qui reste une estimation : TOUTES les fenetres, y compris celles du livret. Quand une source regionale ne donne
 # que le debut de la fenetre, `from` en derive, `to` reste l'ancienne valeur, et la
@@ -483,3 +485,27 @@
   seedLifespanYears: { value: 4, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Maches, 4 a 5 ans, borne basse)", estimate: true }
   successionDays: { value: 14, source: "Jardiner Malin, fiche mache, https://www.jardiner-malin.fr/fiche/mache.html ('semez une petite surface toutes les 2 a 3 semaines', borne basse)", estimate: true }
   maturitySigns: "Rosette de 8 à 10 cm, coupée au ras du sol."
+
+- id: coriandre
+  name: Coriandre
+  family: apiacees
+  # Fenetres lues sur le calendrier imprime d'un sachet Kokopelli (semencier national, mois entiers) : estimation conservee.
+  sowUnderCover: { value: { from: 10, to: 14 }, estimate: true, source: "Sachet Kokopelli Coriandre cultivee, calendrier imprime (semis sous abri en mars), lu le 2026-10-20" }
+  sowDirect: { value: { from: 15, to: 36 }, estimate: true, source: "Sachet Kokopelli Coriandre cultivee, calendrier imprime (semis avril-aout), lu le 2026-10-20" }
+  frostSensitive: false
+  goodCompanions: []
+  badCompanions: []
+  seedLifespanYears: { value: 5, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Coriandre, 5 a 6 ans, borne basse)", estimate: true }
+  maturitySigns: "Feuilles coupées avant la montée en graines."
+
+- id: roquette
+  name: Roquette
+  family: brassicacees
+  # Fenetres lues sur le calendrier imprime d'un sachet Kokopelli (semencier national, mois entiers) : estimation conservee.
+  sowDirect: { value: { from: 10, to: 36 }, estimate: true, source: "Sachet Kokopelli Roquette cultivee, calendrier imprime (semis mars-aout), lu le 2026-10-20" }
+  sowUnderCover: { value: { from: 37, to: 40 }, estimate: true, source: "Sachet Kokopelli Roquette cultivee, calendrier imprime (semis sous abri en septembre), lu le 2026-10-20" }
+  frostSensitive: false
+  goodCompanions: []
+  badCompanions: []
+  seedLifespanYears: { value: 4, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Roquette, 4 ans)", estimate: true }
+  maturitySigns: "Feuilles de 10 à 15 cm, à cueillir avant la floraison."

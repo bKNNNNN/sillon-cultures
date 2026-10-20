@@ -1,6 +1,6 @@
 # Sillon, base cultures potagères
 
-Vingt-trois légumes et aromatiques courants du potager, décrits pour la Gironde : fenêtres de semis et de plantation, durée de culture, température de base, coefficients d'arrosage, espacements, associations, durée de vie des graines.
+Vingt-cinq légumes et aromatiques courants du potager, décrits pour la Gironde : fenêtres de semis et de plantation, durée de culture, température de base, coefficients d'arrosage, espacements, associations, durée de vie des graines.
 
 Chaque valeur dit d'où elle vient. Une valeur porte `source` seulement si le document cité a été lu et contient cette valeur. Sinon elle porte `estimate: true`. Beaucoup de valeurs sont encore des estimations : les corrections sourcées sont bienvenues.
 
@@ -35,7 +35,7 @@ Le fichier se valide avec [sillon-core](https://github.com/bKNNNNN/sillon-core) 
 
 ## Versions
 
-Voir [CHANGELOG.md](CHANGELOG.md). Les applications épinglent une étiquette (`v0.2.0`), jamais une branche.
+Voir [CHANGELOG.md](CHANGELOG.md). Les applications épinglent une étiquette (`v0.2.1`), jamais une branche.
 
 ## Contribuer
 
@@ -53,6 +53,7 @@ Pour une correction ou une nouvelle région, ouvrez une pull request avec, pour 
 - Météo-France, fiche climatologique 1991-2020 de Bordeaux-Mérignac (jours de gel par mois).
 - Truffaut, fiches produit Vilmorin pour les délais de première récolte.
 - Alsagarden, tableau de durée de conservation des graines potagères.
+- Kokopelli, calendriers imprimés au dos des sachets de coriandre et de roquette.
 - SEMAE, fiche « Plant d'ail, saveur facile à cultiver » (2021).
 - CAB Pays de la Loire, fiche technico-économique courgette.
 - Réussir, « Le pois d'hiver est adapté à nos climats », pour la date de semis d'automne des pois.
