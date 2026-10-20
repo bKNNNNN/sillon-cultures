@@ -47,6 +47,14 @@
 # Chambre d'agriculture, FREDON, INRAE : aucun calendrier amateur Gironde lisible trouve.
 # Coriandre, roquette, navet, moutarde et cerfeuil (0.2.1) : fenetres lues sur le calendrier imprime de sachets
 # Kokopelli (semencier national, mois entiers) le 2026-10-20, donc `estimate: true`.
+# Audit des sachets du proprietaire (0.3.0, lu le 2026-10-20) : chaque calendrier imprime a ete relu, puis
+# compare a la fiche produit Kokopelli de la variete (https://kokopelli-semences.fr/en/p/<variete>, rubriques
+# "Sowing period (under cover)", "Sowing period (outdoors)", "Harvest period", "Seeding advice"). Sur le sachet,
+# la mention "*sous abris" est la legende des pastilles grises, pas une fenetre : les fenetres sous abri de
+# roquette (septembre) et de moutarde (octobre) lues en 0.2.1 n'existent ni sur la fiche ni en gris sur le
+# sachet, elles sont retirees. Les delais de premiere recolte viennent de fiches de semenciers (Johnny's
+# Selected Seeds, Vilmorin vendu par Truffaut, High Mowing), nationales ou etrangeres, donc `estimate: true`.
+# Pour les cultures a feuilles, le delai retenu est celui de la plante adulte ("full size"), pas la jeune pousse.
 #
 # Ce qui reste une estimation : TOUTES les fenetres, y compris celles du livret. Quand une source regionale ne donne
 # que le debut de la fenetre, `from` en derive, `to` reste l'ancienne valeur, et la
@@ -82,6 +90,8 @@
 #
 # `aliases` : anciens identifiants d'une culture. `chou` (v0.1.0) est un alias de `chou-ete`.
 # `moutarde-japonaise`, `moutarde-indienne` et `mizuna` sont des alias de `moutarde`.
+# `radis-noir`, `radis-noir-rond` et `daikon` sont des alias de `radis-hiver` ; `pak-choi`, `pak-choy`,
+# `bok-choy` et `tatsoi` sont des alias de `chou-chinois`.
 # Aucun `gdd` : aucune source de degres-jours vers la maturite n'a ete trouvee.
 # Associations : synthese de fiches grand public (neozone.org, FREDON Auvergne-Rhone-Alpes,
 # goodfood.brussels), non sourcees valeur par valeur.
@@ -238,6 +248,23 @@
   successionDays: { value: 14, estimate: true }
   maturitySigns: "Racine de 2 à 3 cm de diamètre, à arracher sans tarder."
 
+# Le radis d'hiver (noir, daikon) se seme en ete et se recolte a l'automne : le delai du radis de printemps
+# (18 jours) annoncait une recolte un mois et demi trop tot. Les alias couvrent les noms lus sur les sachets.
+- id: radis-hiver
+  name: Radis d'hiver
+  family: brassicacees
+  aliases: [radis-noir, radis-noir-rond, daikon]
+  # Fenetre lue sur le sachet Kokopelli Noir Rond et sa fiche. Vilmorin (Noir Gros Rond d'hiver) seme de juillet a septembre :
+  # un semis de septembre reste possible en Gironde, hors de la fenetre du sachet.
+  sowDirect: { value: { from: 23, to: 36 }, estimate: true, source: "Kokopelli, fiche Black Round P5604, https://kokopelli-semences.fr/en/p/black-round-radish ('Sowing period (outdoors) : June, July, August' ; 'Harvest period : September, October, November, December'), lue le 2026-10-20 ; sachet Kokopelli Radis Noir Rond (variete d'hiver), calendrier imprime identique" }
+  firstHarvestDays: { value: { days: 70, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/vilmorin-radis-noir-bio.html (Radis Noir Gros Rond d'hiver bio : 'environ 70-80 jours après le semis', borne basse)", estimate: true }
+  spacingCm: { value: { inRow: 5, betweenRows: 30 }, source: "Kokopelli, fiche Black Round P5604, https://kokopelli-semences.fr/en/p/black-round-radish ('Sow in rows 30 cm apart. Thin to 5 cm on the row')", estimate: true }
+  frostSensitive: false
+  goodCompanions: [carotte, salade, petit-pois]
+  badCompanions: []
+  seedLifespanYears: { value: 5, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Radis, 5 ans)", estimate: true }
+  maturitySigns: "Racine de 8 à 10 cm de diamètre, ferme ; se garde en terre ou en cave jusqu'aux fortes gelées."
+
 - id: carotte
   name: Carotte
   family: apiacees
@@ -260,6 +287,8 @@
   family: amaranthacees
   # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
   sowDirect: { value: { from: 10, to: 36 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Betterave, semailles mars-aout" }
+  # Semis en godets sous abri, repiques a 5 ou 6 feuilles : deux sachets et deux fiches Kokopelli concordent.
+  sowUnderCover: { value: { from: 6, to: 14 }, estimate: true, source: "Kokopelli, fiches Bull's Blood P0509, https://kokopelli-semences.fr/en/p/bull-s-blood-red-beet, et Golden Burpee P0512, https://kokopelli-semences.fr/en/p/golden-burpee-orange-beet ('Sowing period (under cover) : February, March'), lues le 2026-10-20 ; sachets imprimes (fevrier et mars en gris)" }
   tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 70, source: "FAO-56 tableau 11, ligne Beets, table, Apr/May, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   firstHarvestDays: { value: { days: 70, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/sachet-graines-betterave-de-detroit-2-race-preco.html (Detroit 2 : '10 à 12 semaines après semis', borne basse)", estimate: true }
@@ -363,8 +392,11 @@
   family: amaranthacees
   # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
   sowDirect: { value: { from: 15, to: 36 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Bettes a cardes, semailles avril-aout" }
+  # Semis en godets sous abri de mars a mai, repiques apres les dernieres gelees : trois fiches Kokopelli identiques.
+  # Les trois sachets ne grisent que mars ; la fiche, plus detaillee, est retenue.
+  sowUnderCover: { value: { from: 10, to: 22 }, estimate: true, source: "Kokopelli, fiches Yellow P2005, https://kokopelli-semences.fr/en/p/yellow-beet, Feurio L0425, https://kokopelli-semences.fr/en/p/feurio-beet, et Green with White Card P2012, https://kokopelli-semences.fr/en/p/green-with-white-card-beet ('Sowing period (under cover) : March, April, May'), lues le 2026-10-20" }
   firstHarvestDays: { value: { days: 60, from: sowing }, source: "Jardiner Malin, fiche poiree, https://www.jardiner-malin.fr/fiche/poiree.html ('La récolte commence environ deux mois après le semis')", estimate: true }
-  spacingCm: { value: { inRow: 25, betweenRows: 40 }, estimate: true }
+  spacingCm: { value: { inRow: 30, betweenRows: 40 }, source: "Kokopelli, fiches blettes P2005, L0425 et P2012 ('transplant with the root ball at 30 cm intervals. For direct sowing, sow in rows 40 cm apart ... thin out to 30 cm')", estimate: true }
   frostSensitive: false
   goodCompanions: [chou-ete, chou-hiver]
   badCompanions: []
@@ -407,6 +439,24 @@
   badCompanions: [ail, oignon, fraise]
   seedLifespanYears: { value: 5, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Choux, 5 a 8 ans, borne basse)", estimate: true }
   maturitySigns: "Pomme ferme et lourde, feuilles extérieures bien serrées."
+
+# Choux chinois a feuilles (Brassica rapa chinensis : pak choi, tatsoi) : semes en place, recoltes en six a sept
+# semaines. Classes jusqu'ici sous `chou` (chou cabus, recolte deux mois apres plantation), sans delai depuis le semis.
+# Le pe-tsai (chou chinois pomme) n'est pas couvert : plus lent, il demanderait sa propre fiche.
+- id: chou-chinois
+  name: Chou chinois
+  family: brassicacees
+  aliases: [pak-choi, pak-choy, bok-choy, tatsoi]
+  # Fenetre du pak choi, la plus prudente : semis de printemps juste apres les gelees pour limiter la montee en graines,
+  # culture d'automne conseillee. Le tatsoi se seme des mars (fiche Kokopelli L0192) : reglage de variete.
+  sowDirect: { value: { from: 19, to: 36 }, estimate: true, source: "Kokopelli, fiche Pak Choy / Prize Choy P1319, https://kokopelli-semences.fr/en/p/pak-choy-prize-choy-chinese-cabbage ('Sowing period (outdoors) : May, June, July, August' ; 'Autumn cultivation is recommended. Spring sowing is possible, provided it takes place just after the last frosts'), lue le 2026-10-20" }
+  firstHarvestDays: { value: { days: 45, from: sowing }, source: "Johnny's Selected Seeds, fiche Tatsoi organic, https://www.johnnyseeds.com/vegetables/greens/asian-greens/tatsoi-organic-asian-green-seed-2897.html ('25 baby; 45 full size', depuis la levee) ; High Mowing Seeds, fiche Prize Choy, https://www.highmowingseeds.com/organic-non-gmo-prize-choy-pac-choy-a.html ('Days to Maturity: 50 days') ; borne basse", estimate: true }
+  spacingCm: { value: { inRow: 30, betweenRows: 30 }, source: "Kokopelli, fiches Pak Choy P1319 et Tatsoi Spoon L0192, https://kokopelli-semences.fr/en/p/tatsoi-spoon-chinese-cabbage ('in clusters of 2 to 3 seeds, 30 cm apart in all directions')", estimate: true }
+  frostSensitive: false
+  goodCompanions: [salade]
+  badCompanions: [fraise]
+  seedLifespanYears: { value: 5, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (ligne Choux, 5 a 8 ans, borne basse)", estimate: true }
+  maturitySigns: "Rosette de 20 à 30 cm, feuilles tendres ; cueillir feuille à feuille ou couper le pied avant la montée en graines."
 
 - id: fraise
   name: Fraise
@@ -491,8 +541,12 @@
   name: Coriandre
   family: apiacees
   # Fenetres lues sur le calendrier imprime d'un sachet Kokopelli (semencier national, mois entiers) : estimation conservee.
-  sowUnderCover: { value: { from: 10, to: 14 }, estimate: true, source: "Sachet Kokopelli Coriandre cultivee, calendrier imprime (semis sous abri en mars), lu le 2026-10-20" }
-  sowDirect: { value: { from: 15, to: 36 }, estimate: true, source: "Sachet Kokopelli Coriandre cultivee, calendrier imprime (semis avril-aout), lu le 2026-10-20" }
+  # Le sachet grise mars seul ; la fiche produit donne mars et avril sous abri.
+  sowUnderCover: { value: { from: 10, to: 18 }, estimate: true, source: "Kokopelli, fiche Coriander C0167, https://kokopelli-semences.fr/en/p/coriander ('Sowing period (under cover) : March, April'), lue le 2026-10-20 ; sachet Kokopelli Coriandre cultivee, calendrier imprime (mars en gris)" }
+  # Septembre est imprime sur le sachet et sur la fiche : la fenetre 0.2.1 s'arretait a fin aout par erreur de lecture.
+  sowDirect: { value: { from: 15, to: 40 }, estimate: true, source: "Kokopelli, fiche Coriander C0167, https://kokopelli-semences.fr/en/p/coriander ('Sowing period (outdoors) : April, May, June, July, August, September'), lue le 2026-10-20 ; sachet Kokopelli Coriandre cultivee, calendrier imprime (semis avril-septembre)" }
+  firstHarvestDays: { value: { days: 50, from: sowing }, source: "Johnny's Selected Seeds, fiche Santo, https://www.johnnyseeds.com/herbs/cilantro-coriander/santo-cilantro-coriander-seed-919.html ('50-55 to leaf harvest', compte depuis le semis, borne basse)", estimate: true }
+  spacingCm: { value: { inRow: 15, betweenRows: 15 }, source: "Kokopelli, fiche Coriander C0167, https://kokopelli-semences.fr/en/p/coriander ('sow in rows 15 cm apart. Thin to 15 cm')", estimate: true }
   frostSensitive: false
   goodCompanions: []
   badCompanions: []
@@ -503,8 +557,11 @@
   name: Roquette
   family: brassicacees
   # Fenetres lues sur le calendrier imprime d'un sachet Kokopelli (semencier national, mois entiers) : estimation conservee.
-  sowDirect: { value: { from: 10, to: 36 }, estimate: true, source: "Sachet Kokopelli Roquette cultivee, calendrier imprime (semis mars-aout), lu le 2026-10-20" }
-  sowUnderCover: { value: { from: 37, to: 40 }, estimate: true, source: "Sachet Kokopelli Roquette cultivee, calendrier imprime (semis sous abri en septembre), lu le 2026-10-20" }
+  # Septembre est un semis en place, pas sous abri : la pastille est de la meme couleur que mars a aout, et la fiche le confirme.
+  sowDirect: { value: { from: 10, to: 40 }, estimate: true, source: "Kokopelli, fiche Arugula P5700, https://kokopelli-semences.fr/en/p/arugula ('Sowing period (outdoors) : March, April, May, June, July, August, September', aucune periode sous abri), lue le 2026-10-20 ; sachet Kokopelli Roquette cultivee, calendrier imprime (semis mars-septembre)" }
+  firstHarvestDays: { value: { days: 40, from: sowing }, source: "Johnny's Selected Seeds, fiche Arugula (Standard) organic, https://www.johnnyseeds.com/vegetables/greens/arugula-roquette/arugula-standard-organic-salad-arugula-seed-2891.html ('21 baby; 40 full size', plante adulte retenue)", estimate: true }
+  spacingCm: { value: { inRow: 7, betweenRows: 20 }, source: "Kokopelli, fiche Arugula P5700, https://kokopelli-semences.fr/en/p/arugula ('in rows 20 cm apart ... Thin to 7 or 8 cm along the rows', borne basse)", estimate: true }
+  successionDays: { value: 15, source: "Kokopelli, fiche Arugula P5700, https://kokopelli-semences.fr/en/p/arugula ('Sow every 15 days to stagger harvests')", estimate: true }
   frostSensitive: false
   goodCompanions: []
   badCompanions: []
@@ -515,7 +572,10 @@
   name: Navet
   family: brassicacees
   # Fenetre lue sur le calendrier imprime d'un sachet Kokopelli (semencier national, mois entiers) : estimation conservee.
-  sowDirect: { value: { from: 23, to: 40 }, estimate: true, source: "Sachet Kokopelli Navet Gilfeather, calendrier imprime (semis juin-septembre, recolte aout-decembre), lu le 2026-10-20" }
+  sowDirect: { value: { from: 23, to: 40 }, estimate: true, source: "Sachet Kokopelli Navet Gilfeather, calendrier imprime (semis juin-septembre, recolte aout-decembre), lu le 2026-10-20 ; Kokopelli, fiche Gilfeather P5411, https://kokopelli-semences.fr/en/p/gilfeather-turnip ('Sowing period (outdoors) : June, July, August, September')" }
+  # Aucun delai generique lu : Gilfeather (75 a 90 jours) est un croisement navet-rutabaga plus lent qu'un navet ordinaire,
+  # son delai releve d'une fiche variete, pas de la culture.
+  spacingCm: { value: { inRow: 10, betweenRows: 25 }, source: "Kokopelli, fiche Gilfeather P5411, https://kokopelli-semences.fr/en/p/gilfeather-turnip ('in rows 25-30 cm apart ... Thin to 10 cm', borne basse)", estimate: true }
   frostSensitive: false
   goodCompanions: []
   badCompanions: []
@@ -528,9 +588,12 @@
   # Une seule culture pour les moutardes a feuilles : Mizuna et Red Giant en sont des varietes.
   # `moutarde-japonaise` et `moutarde-indienne` ont existe dans l'application avant la fusion.
   aliases: [moutarde-japonaise, moutarde-indienne, mizuna]
-  # Fenetres lues sur le calendrier imprime de sachets Kokopelli (semencier national, mois entiers) : estimation conservee.
-  sowDirect: { value: [{ from: 10, to: 18 }, { from: 32, to: 40 }], estimate: true, source: "Sachets Kokopelli Moutarde japonaise Mizuna et Moutarde indienne Red Giant, calendriers imprimes identiques (semis mars-avril et aout-septembre), lus le 2026-10-20" }
-  sowUnderCover: { value: { from: 41, to: 44 }, estimate: true, source: "Sachets Kokopelli Mizuna et Red Giant, calendriers imprimes (semis sous abri en octobre), lus le 2026-10-20" }
+  # Fenetres lues sur le calendrier imprime de sachets Kokopelli et sur les fiches produit (semencier national, mois entiers) : estimation conservee.
+  # Octobre est un semis en place sur les deux fiches et en pastille sombre sur les deux sachets : la fenetre sous abri d'octobre (0.2.1) est retiree.
+  sowDirect: { value: [{ from: 10, to: 18 }, { from: 32, to: 44 }], estimate: true, source: "Kokopelli, fiches Mizuna P4423, https://kokopelli-semences.fr/en/p/mizuna-japanese-mustard, et Red Giant P4400, https://kokopelli-semences.fr/en/p/red-giant-indian-mustard ('Sowing period (outdoors) : March, April, August, September, October', aucune periode sous abri), lues le 2026-10-20 ; sachets Kokopelli Mizuna et Red Giant, calendriers imprimes identiques" }
+  # Delai depuis la levee chez Johnny's ; Mizuna 40 jours, Red Giant 45 jours (plante adulte), borne basse retenue.
+  firstHarvestDays: { value: { days: 40, from: sowing }, source: "Johnny's Selected Seeds, fiche Mizuna organic, https://www.johnnyseeds.com/vegetables/greens/asian-greens/mizuna-organic-asian-green-seed-2883.html ('18 baby; 40 full size', 'From emergence after direct seeding') et fiche Red Giant organic, https://www.johnnyseeds.com/vegetables/greens/mustard-greens/red-giant-organic-mustard-green-seed-2884.html ('21 baby; 45 full size')", estimate: true }
+  spacingCm: { value: { inRow: 30, betweenRows: 30 }, source: "Kokopelli, fiches Mizuna P4423 et Red Giant P4400 ('sow lightly, in rows 30 cm apart ... thin to 30 cm')", estimate: true }
   frostSensitive: false
   goodCompanions: []
   badCompanions: []
@@ -542,8 +605,11 @@
   name: Cerfeuil
   family: apiacees
   # Fenetres lues sur le calendrier imprime d'un sachet Kokopelli (semencier national, mois entiers) : estimation conservee.
-  sowUnderCover: { value: { from: 6, to: 9 }, estimate: true, source: "Sachet Kokopelli Cerfeuil Simple, calendrier imprime (semis sous abri en fevrier), lu le 2026-10-20" }
-  sowDirect: { value: { from: 10, to: 40 }, estimate: true, source: "Sachet Kokopelli Cerfeuil Simple, calendrier imprime (semis mars-septembre), lu le 2026-10-20" }
+  # Le sachet grise fevrier seul ; la fiche produit donne fevrier et mars sous abri.
+  sowUnderCover: { value: { from: 6, to: 14 }, estimate: true, source: "Kokopelli, fiche Simple A0166, https://kokopelli-semences.fr/en/p/simple-chervil ('Sowing period (under cover) : February, March'), lue le 2026-10-20 ; sachet Kokopelli Cerfeuil Simple, calendrier imprime (fevrier en gris)" }
+  sowDirect: { value: { from: 10, to: 40 }, estimate: true, source: "Sachet Kokopelli Cerfeuil Simple, calendrier imprime (semis mars-septembre), lu le 2026-10-20 ; Kokopelli, fiche Simple A0166, https://kokopelli-semences.fr/en/p/simple-chervil ('Sowing period (outdoors) : March ... September')" }
+  firstHarvestDays: { value: { days: 60, from: sowing }, source: "Johnny's Selected Seeds, fiche Vertissimo, https://www.johnnyseeds.com/herbs/herbs-for-salad-mix/vertissimo-chervil-seed-2441.html ('60 days', compte depuis le semis)", estimate: true }
+  spacingCm: { value: { inRow: 10, betweenRows: 20 }, source: "Kokopelli, fiche Simple A0166, https://kokopelli-semences.fr/en/p/simple-chervil ('in rows 20 cm apart ... Thin to 10 cm')", estimate: true }
   frostSensitive: false
   goodCompanions: []
   badCompanions: []

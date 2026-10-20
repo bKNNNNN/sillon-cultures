@@ -35,7 +35,7 @@ Le fichier se valide avec [sillon-core](https://github.com/bKNNNNN/sillon-core) 
 
 ## Versions
 
-Voir [CHANGELOG.md](CHANGELOG.md). Les applications épinglent une étiquette (`v0.2.1`), jamais une branche.
+Voir [CHANGELOG.md](CHANGELOG.md). Les applications épinglent une étiquette (`v0.3.0`), jamais une branche.
 
 ## Contribuer
 
