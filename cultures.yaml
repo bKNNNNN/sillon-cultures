@@ -268,6 +268,8 @@
   family: amaranthacees
   # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
   sowDirect: { value: { from: 10, to: 36 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Betterave, semailles mars-aout" }
+  # Semis en godets sous abri, repiques a 5 ou 6 feuilles : deux sachets et deux fiches Kokopelli concordent.
+  sowUnderCover: { value: { from: 6, to: 14 }, estimate: true, source: "Kokopelli, fiches Bull's Blood P0509, https://kokopelli-semences.fr/en/p/bull-s-blood-red-beet, et Golden Burpee P0512, https://kokopelli-semences.fr/en/p/golden-burpee-orange-beet ('Sowing period (under cover) : February, March'), lues le 2026-10-20 ; sachets imprimes (fevrier et mars en gris)" }
   tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 70, source: "FAO-56 tableau 11, ligne Beets, table, Apr/May, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   firstHarvestDays: { value: { days: 70, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/sachet-graines-betterave-de-detroit-2-race-preco.html (Detroit 2 : '10 à 12 semaines après semis', borne basse)", estimate: true }
@@ -371,8 +373,11 @@
   family: amaranthacees
   # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
   sowDirect: { value: { from: 15, to: 36 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Bettes a cardes, semailles avril-aout" }
+  # Semis en godets sous abri de mars a mai, repiques apres les dernieres gelees : trois fiches Kokopelli identiques.
+  # Les trois sachets ne grisent que mars ; la fiche, plus detaillee, est retenue.
+  sowUnderCover: { value: { from: 10, to: 22 }, estimate: true, source: "Kokopelli, fiches Yellow P2005, https://kokopelli-semences.fr/en/p/yellow-beet, Feurio L0425, https://kokopelli-semences.fr/en/p/feurio-beet, et Green with White Card P2012, https://kokopelli-semences.fr/en/p/green-with-white-card-beet ('Sowing period (under cover) : March, April, May'), lues le 2026-10-20" }
   firstHarvestDays: { value: { days: 60, from: sowing }, source: "Jardiner Malin, fiche poiree, https://www.jardiner-malin.fr/fiche/poiree.html ('La récolte commence environ deux mois après le semis')", estimate: true }
-  spacingCm: { value: { inRow: 25, betweenRows: 40 }, estimate: true }
+  spacingCm: { value: { inRow: 30, betweenRows: 40 }, source: "Kokopelli, fiches blettes P2005, L0425 et P2012 ('transplant with the root ball at 30 cm intervals. For direct sowing, sow in rows 40 cm apart ... thin out to 30 cm')", estimate: true }
   frostSensitive: false
   goodCompanions: [chou-ete, chou-hiver]
   badCompanions: []
