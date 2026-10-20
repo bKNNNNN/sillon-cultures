@@ -1,0 +1,34 @@
+name: check
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  # sillon-core release whose parseCrops must accept cultures.yaml.
+  SILLON_CORE_REF: v0.3.0
+
+jobs:
+  parse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: bKNNNNN/sillon-core
+          ref: ${{ env.SILLON_CORE_REF }}
+          path: core
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build sillon-core
+        working-directory: core
+        run: pnpm install --frozen-lockfile && pnpm build
+      - name: Check cultures.yaml
+        run: node scripts/check.mjs core/dist/index.js

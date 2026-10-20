@@ -8,10 +8,13 @@
 # Fenetres (`sowUnderCover`, `sowDirect`, `transplant`) : semaines ISO (1-53),
 # from > to autorise (passage du nouvel an).
 # Une fenetre `{ from, to }`, ou une liste de fenetres quand la culture a deux saisons.
+# Une fenetre peut porter `note`, un court texte francais repris dans le conseil
+# ("sous voile", "ail de printemps"), 40 caracteres au plus.
 # Regle mois vers semaines : une source donne des mois. "Debut de mois" = semaine ISO
 # du premier lundi du mois, "fin de mois" = semaine ISO du dernier lundi du mois,
 # calculees sur 2026 (les numeros bougent d'une semaine au plus selon l'annee).
-# Debuts de mois utilises : fevrier S6, mars S10, avril S15, mai S19.
+# Debuts de mois utilises : fevrier S6, mars S10, avril S15, mai S19, octobre S41.
+# Fins de mois utilisees : avril S18, juin S27, aout S36, octobre S44, decembre S53.
 # `sowDirect` couvre aussi la plantation de caieux (ail) et de tubercules (pomme de terre).
 #
 # Sources regionales lues pour les fenetres (aucune ne donne de fenetre complete) :
@@ -50,12 +53,15 @@
 # reference, non adaptee. Aucune fenetre n'a ete tiree de la memoire.
 #
 # `firstHarvestDays` : delai jusqu'a la PREMIERE recolte, `from` dit si les jours courent
-# depuis le semis (`sowing`) ou la plantation (`transplant`). Toutes les valeurs actuelles
-# partent du semis. Regle de la fourchette : si la source donne une fourchette, on garde
-# la borne basse. Conversion : 1 semaine = 7 jours, 1 mois = 30 jours. Sources : fiches
-# culture Jardiner Malin et fiches produit Vilmorin vendues par Truffaut, nationales (une
-# variete pour radis, betterave, concombre, petit pois, epinard), donc `estimate: true`.
-# Aucune valeur pour les autres cultures : pas de source lue (tomate, poireau, etc.).
+# depuis le semis (`sowing`) ou la plantation (`transplant`). Une culture semee en place
+# ou plantee (courgette, concombre) donne une liste de deux delais, un par origine.
+# Regle de la fourchette : si la source donne une fourchette, on garde la borne basse.
+# Conversion : 1 semaine = 7 jours, 1 mois = 30 jours. Quand la source ne donne que des
+# mois de plantation et de recolte (ail, poireau, chou d'hiver), le delai va du milieu de
+# la periode de semis au debut de la periode de recolte, et la `source` le dit. Sources :
+# fiches culture Jardiner Malin, fiches produit Vilmorin vendues par Truffaut, SEMAE,
+# CAB Pays de la Loire, nationales ou d'une autre region, donc `estimate: true`.
+# Aucune valeur pour la tomate : aucune source lue ne donne un delai plantation-recolte.
 #
 # `daysToMaturity` : duree totale de saison (colonne Total) du tableau 11 de la FAO 56,
 # pas une premiere recolte. Les 14 valeurs ont ete relues le 2026-10-16 dans le texte du
@@ -65,9 +71,13 @@
 # `kc` : valeurs lues dans les jeux de donnees du paquet R FAO56 (extraits du tableau 12 de
 # la FAO 56) et toutes verifiees. Pour la tomate, le tableau donne une fin de saison de
 # 0.70 a 0.90 ; `late: 0.8` est le milieu de cette fourchette.
-# `seedLifespanYears` : valeurs relevees dans un resume de resultat de recherche de la page
-# "Espace pour la vie, conservation des semences de legumes" (page illisible, erreur 403) ;
-# AUCUNE source citee. Fourchette ramenee a sa borne basse (courge 6-8 -> 6, radis 4-5 -> 4).
+# `seedLifespanYears` : tableau "Duree de conservation et germination des graines
+# potageres" d'Alsagarden, lu le 2026-10-20 (colonne Conservation), borne basse de la
+# fourchette. Vendeur de semences national, donc `estimate: true`. La courge prend la ligne
+# Potiron, la blette la ligne Poiree. Ail et pomme de terre se multiplient par caieux et
+# tubercules : 1 an, estimation. Fraise : aucune source lue, estimation.
+#
+# `aliases` : anciens identifiants d'une culture. `chou` (v0.1.0) est un alias de `chou-ete`.
 # Aucun `gdd` : aucune source de degres-jours vers la maturite n'a ete trouvee.
 # Associations : synthese de fiches grand public (neozone.org, FREDON Auvergne-Rhone-Alpes,
 # goodfood.brussels), non sourcees valeur par valeur.
@@ -77,14 +87,15 @@
   family: solanacees
   # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
   sowUnderCover: { value: { from: 6, to: 13 }, estimate: true, source: "from: Bordeaux au Vert, maraicher bio de Bordeaux, https://www.bordeaux-transition.org/semer-en-fevrier-sous-la-fenetre-ce-qui-leve-a-bordeaux-avant-avril/. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
-  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
-  transplant: { value: { from: 19, to: 36 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Tomates, plantation mai-aout" }
+  # Le livret donne mai-aout ; un plant mis en place en aout ne murit pas avant les nuits froides.
+  # Fin ramenee a la semaine 25 (mi-juin) : estimation. Le debut suit les dernieres gelees.
+  transplant: { value: { from: 19, to: 25 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html (tomates des debut mai). to: estimation, la saison FAO-56 de 155 jours ne tient plus apres mi-juin" }
   tBaseC: { value: 10.0, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 155, source: "FAO-56 tableau 11, ligne Tomato, Apr/May, Calif., USA, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   spacingCm: { value: { inRow: 50, betweenRows: 70 }, estimate: true }
   kc: { value: { initial: 0.6, mid: 1.15, late: 0.8 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: true
-  goodCompanions: [carotte, oignon, poireau, basilic, chou, persil, ail]
+  goodCompanions: [carotte, oignon, poireau, basilic, chou-ete, chou-hiver, persil, ail]
   badCompanions: [pomme-de-terre, betterave]
   seedLifespanYears: { value: 3, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Tomate, 3 a 4 ans, borne basse)", estimate: true }
   maturitySigns: "Fruits bien colorés et fermes, qui se détachent facilement du pied."
@@ -100,7 +111,8 @@
   transplant: { value: { from: 19, to: 23 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: estimation, aucune source" }
   tBaseC: { value: 7.2, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 100, source: "FAO-56 tableau 11, ligne Squash, Zucchini, Apr; Dec., Medit.; Arid Reg., https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
-  firstHarvestDays: { value: { days: 60, from: sowing }, source: "Jardiner Malin, fiche culture, https://www.jardiner-malin.fr/fiche/courgette.html ('La récolte a lieu environ 2 mois après le semis')", estimate: true }
+  # Deux delais : depuis le semis en place, et depuis la plantation d'un plant (godet ou achete).
+  firstHarvestDays: { value: [{ days: 60, from: sowing }, { days: 35, from: transplant }], source: "sowing: Jardiner Malin, fiche culture, https://www.jardiner-malin.fr/fiche/courgette.html ('La récolte a lieu environ 2 mois après le semis'). transplant: CAB Pays de la Loire, fiche technico-economique courgette, https://www.la-cab.fr/wp-content/uploads/2020/10/fichetk_courgette.pdf (plein champ sous baches non tissees : plantation du 25/04 a fin mai, recolte de fin mai a fin juillet, soit environ 5 semaines)", estimate: true }
   spacingCm: { value: { inRow: 80, betweenRows: 100 }, estimate: true }
   kc: { value: { initial: 0.5, mid: 0.95, late: 0.75 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: true
@@ -135,11 +147,13 @@
   sowUnderCover: { value: { from: 15, to: 19 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
   # Debut de fenetre : source regionale lue. Fin de fenetre : non regionale, estimation conservee.
   sowDirect: { value: { from: 19, to: 23 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
-  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
-  transplant: { value: { from: 19, to: 36 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Concombre, plantation mai-aout" }
+  # Le livret donne mai-aout ; avec une base de 12.8 C, les nuits de septembre n'apportent presque plus de chaleur.
+  transplant: { value: { from: 19, to: 27 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html (concombres des debut mai). to: Jardiner Malin, fiche culture, https://www.jardiner-malin.fr/fiche/culture-concombre.html ('Repiquez en pleine terre pas avant le mois de mai, apres tout risque de gelee et jusque fin juin', fin juin = S27)" }
   tBaseC: { value: 12.8, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 105, source: "FAO-56 tableau 11, ligne Cucumber, June/Aug, Arid Region, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
-  firstHarvestDays: { value: { days: 60, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/sachet-graines-de-concombre-breso-hf1.html (Breso HF1 : '60 jours du semis à la récolte')", estimate: true }
+  # Deux delais : depuis le semis en place, et depuis la plantation d'un plant (godet ou achete).
+  # Le delai depuis la plantation retire 4 semaines d'elevage en godet, la borne basse donnee pour la courgette par Jardiner Malin.
+  firstHarvestDays: { value: [{ days: 60, from: sowing }, { days: 32, from: transplant }], source: "sowing: Truffaut, fiche produit Vilmorin, https://www.truffaut.com/sachet-graines-de-concombre-breso-hf1.html (Breso HF1 : '60 jours du semis à la récolte'). transplant: 60 jours moins 4 semaines d'elevage, Jardiner Malin, https://www.jardiner-malin.fr/fiche/courgette.html ('repiquez en pleine terre 4 à 6 semaines plus tard')", estimate: true }
   spacingCm: { value: { inRow: 50, betweenRows: 100 }, estimate: true }
   kc: { value: { initial: 0.6, mid: 1.0, late: 0.75 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: true
@@ -159,7 +173,7 @@
   spacingCm: { value: { inRow: 10, betweenRows: 40 }, estimate: true }
   kc: { value: { initial: 0.5, mid: 1.05, late: 0.9 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: true
-  goodCompanions: [carotte, chou, fraise, salade, pomme-de-terre]
+  goodCompanions: [carotte, chou-ete, chou-hiver, fraise, salade, pomme-de-terre]
   badCompanions: [ail, oignon, poireau, petit-pois]
   seedLifespanYears: { value: 3, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Haricots, 3 ans)", estimate: true }
   successionDays: { value: 21, estimate: true }
@@ -168,15 +182,16 @@
 - id: petit-pois
   name: Petit pois
   family: fabacees
-  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
-  sowDirect: { value: { from: 10, to: 31 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Pois, semailles mars-juillet" }
+  # Le livret donne mars-juillet ; les semis d'ete levent mal sur sable chaud. Fenetre de printemps 6-16,
+  # plus un semis d'automne pour varietes rustiques, pas avant le 20 octobre (S43) : estimation pour le pois potager.
+  sowDirect: { value: [{ from: 6, to: 16 }, { from: 43, to: 47, note: "automne, variété rustique" }], estimate: true, source: "printemps : Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf (Pois, semailles mars-juillet), fin avancee a mi-avril par estimation. automne : Reussir, 'Le pois d hiver est adapte a nos climats', https://www.reussir.fr/grandes-cultures/le-pois-dhiver-est-adapte-nos-climats ('Pas de semis de pois d hiver avant le 20 octobre', pois de grande culture)" }
   tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 90, source: "FAO-56 tableau 11, ligne Peas, May, Europe, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   firstHarvestDays: { value: { days: 60, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/graines-potageres-pois-ecosser-nain-rondo-bio-681522.html (Rondo bio : 'Récolte : 60 jours après le semis')", estimate: true }
   spacingCm: { value: { inRow: 5, betweenRows: 40 }, estimate: true }
   kc: { value: { initial: 0.5, mid: 1.15, late: 1.1 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
-  goodCompanions: [carotte, radis, salade, chou]
+  goodCompanions: [carotte, radis, salade, chou-ete, chou-hiver]
   badCompanions: [ail, oignon, poireau, haricot]
   seedLifespanYears: { value: 2, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Pois, 2 a 3 ans, borne basse)", estimate: true }
   successionDays: { value: 21, estimate: true }
@@ -247,7 +262,7 @@
   spacingCm: { value: { inRow: 10, betweenRows: 30 }, estimate: true }
   kc: { value: { initial: 0.5, mid: 1.05, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
-  goodCompanions: [oignon, chou]
+  goodCompanions: [oignon, chou-ete, chou-hiver]
   badCompanions: [tomate, carotte]
   seedLifespanYears: { value: 6, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Betterave, 6 a 10 ans, borne basse)", estimate: true }
   successionDays: { value: 21, estimate: true }
@@ -260,6 +275,8 @@
   sowDirect: { value: { from: 10, to: 20 }, estimate: true, source: "from: Jardiner Malin, calendrier par climat (Aquitaine et Poitou-Charentes, semi-oceanique), https://www.jardiner-malin.fr/fiche/calendrier-semis-recolte-potager.html. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
   # Aucune source regionale lue : valeur conservee, estimation.
   transplant: { value: { from: 24, to: 33 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
+  # Variete d'hiver : semis de mars a mai (milieu en avril), recolte a partir de novembre, 7 mois. Un poireau d'ete se recolte plus tot.
+  firstHarvestDays: { value: { days: 210, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/vilmorin-poireau-bleu-de-solaise.html (Bleu de Solaise : periode de semis mars a mai, periode de recolte novembre a mars)", estimate: true }
   spacingCm: { value: { inRow: 10, betweenRows: 30 }, estimate: true }
   frostSensitive: false
   goodCompanions: [carotte, fraise, tomate]
@@ -290,12 +307,15 @@
   name: Ail
   family: amaryllidacees
   # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
-  sowDirect: { value: { from: 41, to: 49 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Ail (oignonet), semailles octobre-novembre" }
+  # Seconde fenetre facultative pour l'ail rose de printemps, a plus forte dormance (SEMAE).
+  sowDirect: { value: [{ from: 41, to: 49 }, { from: 5, to: 9, note: "ail de printemps" }], estimate: true, source: "automne : Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf (Ail (oignonet), semailles octobre-novembre). printemps : SEMAE, 'Plant d ail, saveur facile a cultiver', 2021, https://www.semae.fr/uploads/semae-fr-publications-d1518-plant-ail-saveur-facile-a-cultiver-prosemail-2021.pdf ('L ail de printemps ... peut donc etre plante d octobre a mars selon les regions'), bornes par estimation" }
+  # 7 mois : plantation fin octobre, recolte a maturite a partir de juin (SEMAE). Delai derive des mois, estimation.
+  firstHarvestDays: { value: { days: 210, from: sowing }, source: "SEMAE, 2021, https://www.semae.fr/uploads/semae-fr-publications-d1518-plant-ail-saveur-facile-a-cultiver-prosemail-2021.pdf ('ail d automne ... d octobre a novembre pour une recolte en juin')", estimate: true }
   spacingCm: { value: { inRow: 10, betweenRows: 25 }, estimate: true }
   kc: { value: { initial: 0.7, mid: 1.0, late: 0.7 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
   goodCompanions: [carotte, fraise, tomate, oignon]
-  badCompanions: [chou, haricot, petit-pois]
+  badCompanions: [chou-ete, chou-hiver, haricot, petit-pois]
   # Multiplication par caieux, pas par graines : un lot se replante dans l'annee qui suit sa recolte.
   seedLifespanYears: { value: 1, estimate: true }
   maturitySigns: "Feuilles jaunies sur les deux tiers, bulbe garni de caïeux."
@@ -303,8 +323,9 @@
 - id: pomme-de-terre
   name: Pomme de terre
   family: solanacees
-  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
-  sowDirect: { value: { from: 6, to: 31 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Pommes de terre, plantation fevrier-juillet, couverture plastique conseillee de fevrier a avril" }
+  # Le livret donne fevrier-juillet. Fevrier en pleine terre : 6.3 jours de gel a Merignac. Juillet : pic de mildiou et de secheresse.
+  # Trois fenetres : fevrier seulement sous voile, plantation principale de mi-mars a fin avril, plantation tardive fin juillet (estimation).
+  sowDirect: { value: [{ from: 6, to: 10, note: "sous voile" }, { from: 11, to: 17 }, { from: 27, to: 30, note: "plantation tardive" }], estimate: true, source: "sous voile : Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf (couverture plastique conseillee de fevrier a avril). principale : Jardiner Malin, fiche pomme de terre, https://www.jardiner-malin.fr/fiche/pomme-de-terre.html ('Attendez la mi-mars en region douce', sol a 10 C). tardive : estimation" }
   tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   daysToMaturity: { value: 130, source: "FAO-56 tableau 11, ligne Potato, May, Continental Climate, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   spacingCm: { value: { inRow: 35, betweenRows: 70 }, estimate: true }
@@ -319,14 +340,15 @@
 - id: epinard
   name: Épinard
   family: amaranthacees
-  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
-  sowDirect: { value: [{ from: 6, to: 18 }, { from: 32, to: 40 }], estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Epinard, semailles fevrier-avril et aout-septembre" }
+  # Le livret donne fevrier-avril et aout-septembre. Debut mai : les jours longs font monter en graines.
+  # Aout : le sol depasse souvent la temperature maximale de germination. Bornes decalees : estimation.
+  sowDirect: { value: [{ from: 6, to: 15 }, { from: 35, to: 41 }], estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf (Epinard, semailles fevrier-avril et aout-septembre), bornes decalees par estimation" }
   daysToMaturity: { value: 100, source: "FAO-56 tableau 11, ligne Spinach, November, Arid Region, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   firstHarvestDays: { value: { days: 42, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/sachet-de-graines-epinard-parys-hf1-creation-vilmorin.html (Parys HF1 : '6 à 8 semaines après le semis', borne basse)", estimate: true }
   spacingCm: { value: { inRow: 10, betweenRows: 25 }, estimate: true }
   kc: { value: { initial: 0.7, mid: 1.0, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
-  goodCompanions: [fraise, chou]
+  goodCompanions: [fraise, chou-ete, chou-hiver]
   badCompanions: []
   seedLifespanYears: { value: 4, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Epinards, 4 a 5 ans, borne basse)", estimate: true }
   successionDays: { value: 14, estimate: true }
@@ -337,20 +359,25 @@
   family: amaranthacees
   # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
   sowDirect: { value: { from: 15, to: 36 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Bettes a cardes, semailles avril-aout" }
+  firstHarvestDays: { value: { days: 60, from: sowing }, source: "Jardiner Malin, fiche poiree, https://www.jardiner-malin.fr/fiche/poiree.html ('La récolte commence environ deux mois après le semis')", estimate: true }
   spacingCm: { value: { inRow: 25, betweenRows: 40 }, estimate: true }
   frostSensitive: false
-  goodCompanions: [chou]
+  goodCompanions: [chou-ete, chou-hiver]
   badCompanions: []
   seedLifespanYears: { value: 6, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (ligne Poiree, 6 ans)", estimate: true }
   maturitySigns: "Feuilles larges et côtes épaisses, cueillies par l'extérieur."
 
-- id: chou
-  name: Chou
+# Le chou de v0.1.0 melangeait choux d'ete, d'automne et d'hiver dans une seule fenetre de mars a septembre.
+# Il est separe en deux cultures. `chou` reste un alias de `chou-ete` pour que les plantations enregistrees restent valides.
+- id: chou-ete
+  name: Chou d'été
   family: brassicacees
-  # Aucune source regionale lue : valeur conservee, estimation.
-  sowUnderCover: { value: { from: 9, to: 14 }, estimate: true, source: "Calendrier CIVAM/ARS Auvergne-Rhone-Alpes, https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf" }
-  # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
-  transplant: { value: { from: 10, to: 36 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Choux frise, blanc et rouge, plantation mars-aout" }
+  aliases: [chou]
+  # Semis en pepiniere ou en plaques : fevrier sous abri pour les choux d'ete, puis mars a mai pour les choux d'aout a novembre.
+  sowUnderCover: { value: { from: 6, to: 22 }, estimate: true, source: "Jardiner Malin, fiche chou cabus, https://www.jardiner-malin.fr/fiche/chou-cabus.html ('En fevrier (sous abri) pour des choux d ete. De mars a mai pour manger des choux d aout a novembre')" }
+  # Repiquage au stade 10 a 15 cm, quelques semaines apres le semis : bornes par estimation dans la periode fevrier-aout de la source.
+  transplant: { value: { from: 10, to: 27 }, estimate: true, source: "Jardiner Malin, fiche chou cabus, https://www.jardiner-malin.fr/fiche/chou-cabus.html ('cette transplantation intervient de fevrier a aout'), bornes par estimation" }
+  firstHarvestDays: { value: { days: 60, from: transplant }, source: "Jardiner Malin, fiche chou cabus, https://www.jardiner-malin.fr/fiche/chou-cabus.html ('Les choux cabus se recoltent environ deux mois apres la plantation')", estimate: true }
   daysToMaturity: { value: 165, source: "FAO-56 tableau 11, ligne Cabbage, Sept, Calif. Desert, USA, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
   spacingCm: { value: { inRow: 50, betweenRows: 60 }, estimate: true }
   kc: { value: { initial: 0.7, mid: 1.05, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
@@ -360,17 +387,36 @@
   seedLifespanYears: { value: 5, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Choux, 5 a 8 ans, borne basse)", estimate: true }
   maturitySigns: "Pomme ferme et compacte sous la main."
 
+- id: chou-hiver
+  name: Chou d'hiver
+  family: brassicacees
+  # Semis de fin mai a juin pour une recolte de novembre a mars en climat doux.
+  sowUnderCover: { value: { from: 22, to: 27 }, estimate: true, source: "Jardiner Malin, fiche chou cabus, https://www.jardiner-malin.fr/fiche/chou-cabus.html ('Fin mai-juin pour une recolte hivernale de novembre a mars, en climat doux')" }
+  transplant: { value: { from: 28, to: 36 }, estimate: true, source: "Jardiner Malin, fiche chou cabus, https://www.jardiner-malin.fr/fiche/chou-cabus.html ('cette transplantation intervient de fevrier a aout'), debut par estimation" }
+  # 5 mois : semis fin mai, premiere recolte en novembre. Delai derive des mois, estimation.
+  firstHarvestDays: { value: { days: 150, from: sowing }, source: "Jardiner Malin, fiche chou cabus, https://www.jardiner-malin.fr/fiche/chou-cabus.html ('Fin mai-juin pour une recolte hivernale de novembre a mars')", estimate: true }
+  daysToMaturity: { value: 165, source: "FAO-56 tableau 11, ligne Cabbage, Sept, Calif. Desert, USA, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  spacingCm: { value: { inRow: 50, betweenRows: 60 }, estimate: true }
+  kc: { value: { initial: 0.7, mid: 1.05, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
+  frostSensitive: false
+  goodCompanions: [betterave, haricot, salade, petit-pois]
+  badCompanions: [ail, oignon, fraise]
+  seedLifespanYears: { value: 5, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Choux, 5 a 8 ans, borne basse)", estimate: true }
+  maturitySigns: "Pomme ferme et lourde, feuilles extérieures bien serrées."
+
 - id: fraise
   name: Fraise
   family: rosacees
   # Aucune source regionale lue : valeur conservee, estimation.
   transplant: { value: { from: 35, to: 41 }, estimate: true }
+  # Plantation de septembre-octobre pour la production de l'annee suivante ; premieres fraises en mai : estimation.
+  firstHarvestDays: { value: { days: 240, from: transplant }, source: "Jardiner Malin, fiche fraisier, https://www.jardiner-malin.fr/fiche/fraisier.html ('Septembre-octobre : Oui, excellente période. Favorise l enracinement avant l hiver et la production de l année suivante'), mois de premiere recolte par estimation", estimate: true }
   tBaseC: { value: 3.9, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description", estimate: true }
   spacingCm: { value: { inRow: 30, betweenRows: 40 }, estimate: true }
   kc: { value: { initial: 0.4, mid: 0.85, late: 0.75 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
   goodCompanions: [ail, salade, oignon, poireau, haricot]
-  badCompanions: [chou]
+  badCompanions: [chou-ete, chou-hiver]
   # Aucune source lue pour les graines de fraisier : estimation.
   seedLifespanYears: { value: 3, estimate: true }
   maturitySigns: "Fruit entièrement rouge, parfumé, qui se détache sans effort."
@@ -384,6 +430,7 @@
   sowDirect: { value: { from: 19, to: 24 }, estimate: true }
   # Aucune source regionale lue : valeur conservee, estimation.
   transplant: { value: { from: 19, to: 23 }, estimate: true }
+  firstHarvestDays: { value: { days: 60, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/vilmorin-basilic-genovese-bio.html (Genovese bio : 'Période de récolte 60-75 jours après semis', borne basse)", estimate: true }
   spacingCm: { value: { inRow: 20, betweenRows: 25 }, estimate: true }
   frostSensitive: true
   goodCompanions: [tomate, concombre, courgette]
@@ -398,9 +445,40 @@
   sowUnderCover: { value: { from: 6, to: 12 }, estimate: true, source: "from: Bordeaux au Vert, maraicher bio de Bordeaux, https://www.bordeaux-transition.org/semer-en-fevrier-sous-la-fenetre-ce-qui-leve-a-bordeaux-avant-avril/. to: calendrier CIVAM/ARS Auvergne-Rhone-Alpes, non regional" }
   # Fenetre complete tiree du livret du Departement de la Gironde (mois entiers) : estimation conservee, livret non technique.
   sowDirect: { value: { from: 15, to: 36 }, estimate: true, source: "Livret Graine d'assiette, Conseil departemental des jeunes de la Gironde 2016-2017, calendrier p. 11 (image lue), https://www.gironde.fr/sites/default/files/2017-06/cdj2017-graine-assiette.pdf : Persil et ciboulette, semailles avril-aout" }
+  firstHarvestDays: { value: { days: 42, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/vilmorin-persil-vert-frise-bio.html (persil vert frise bio : 'Période de récolte 6-8 semaines après semis', borne basse)", estimate: true }
   spacingCm: { value: { inRow: 15, betweenRows: 25 }, estimate: true }
   frostSensitive: false
   goodCompanions: [tomate, carotte]
   badCompanions: []
   seedLifespanYears: { value: 2, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Persil, 2 a 3 ans, borne basse)", estimate: true }
   maturitySigns: "Feuilles bien fournies, coupées à l'extérieur."
+
+- id: feve
+  name: Fève
+  family: fabacees
+  # Deux saisons : fin d'hiver partout, automne dans les regions a hiver doux, dont le Sud-Ouest selon la source.
+  sowDirect: { value: [{ from: 6, to: 18 }, { from: 41, to: 53, note: "automne, hiver doux" }], estimate: true, source: "Jardiner Malin, fiche feve, https://www.jardiner-malin.fr/fiche/feve.html ('de fevrier a avril partout en France et meme un peu plus tot, d octobre a decembre, pour les climats mediterraneens et doux en hiver' ; 'Regions a hiver doux (Midi, Sud-Ouest, Ouest) : semis des feves : automne')" }
+  # Delai d'un semis de fin d'hiver. Un semis d'automne passe l'hiver et se recolte au printemps, plus tard que ce delai.
+  firstHarvestDays: { value: { days: 90, from: sowing }, source: "Jardiner Malin, fiche feve, https://www.jardiner-malin.fr/fiche/feve.html ('Environ 3 a 4 mois apres le semis', borne basse)", estimate: true }
+  daysToMaturity: { value: 100, source: "FAO-56 tableau 11, ligne Faba bean, broad bean, Mar/Apr, Mediterranean, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  kc: { value: { initial: 0.5, mid: 1.15, late: 1.1 }, source: "FAO-56 tableau 12, ligne Fababean (broad bean) - Fresh, https://www.fao.org/4/x0490e/x0490e0b.htm", estimate: true }
+  spacingCm: { value: { inRow: 15, betweenRows: 50 }, estimate: true }
+  frostSensitive: false
+  goodCompanions: []
+  badCompanions: [ail, oignon, poireau]
+  seedLifespanYears: { value: 5, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Feves, 5 a 6 ans, borne basse)", estimate: true }
+  maturitySigns: "Gousses gonflées, grains bien formés et encore tendres."
+
+- id: mache
+  name: Mâche
+  family: valerianacees
+  # Semis de fin aout (S36) a fin octobre (S44) pour une recolte d'automne, d'hiver et de debut de printemps.
+  sowDirect: { value: { from: 36, to: 44 }, estimate: true, source: "Jardiner Malin, fiche mache, https://www.jardiner-malin.fr/fiche/mache.html ('Periode de semis : de fin aout a octobre pour une recolte automnale et hivernale')" }
+  firstHarvestDays: { value: { days: 60, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/vilmorin-mache-a-grosse-graine.html (Mache a grosse graine : 'La recolte intervient 60 a 80 jours apres le semis', borne basse)", estimate: true }
+  spacingCm: { value: { inRow: 10, betweenRows: 20 }, estimate: true }
+  frostSensitive: false
+  goodCompanions: []
+  badCompanions: []
+  seedLifespanYears: { value: 4, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Maches, 4 a 5 ans, borne basse)", estimate: true }
+  successionDays: { value: 14, source: "Jardiner Malin, fiche mache, https://www.jardiner-malin.fr/fiche/mache.html ('semez une petite surface toutes les 2 a 3 semaines', borne basse)", estimate: true }
+  maturitySigns: "Rosette de 8 à 10 cm, coupée au ras du sol."
