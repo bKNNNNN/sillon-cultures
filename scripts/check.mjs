@@ -21,7 +21,7 @@ const LEGACY_IDS = [
 ];
 const RENAMED = { chou: 'chou-ete' };
 /** Crops added after v0.1.0. */
-const ADDED_IDS = ['chou-hiver', 'feve', 'mache', 'coriandre', 'roquette', 'navet', 'moutarde', 'cerfeuil'];
+const ADDED_IDS = ['chou-hiver', 'feve', 'mache', 'coriandre', 'roquette', 'navet', 'moutarde', 'cerfeuil', 'radis-hiver'];
 
 /**
  * Quotes a review found in no source document. They must never come back as citations.

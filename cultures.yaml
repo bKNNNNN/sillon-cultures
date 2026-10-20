@@ -246,6 +246,23 @@
   successionDays: { value: 14, estimate: true }
   maturitySigns: "Racine de 2 à 3 cm de diamètre, à arracher sans tarder."
 
+# Le radis d'hiver (noir, daikon) se seme en ete et se recolte a l'automne : le delai du radis de printemps
+# (18 jours) annoncait une recolte un mois et demi trop tot. Les alias couvrent les noms lus sur les sachets.
+- id: radis-hiver
+  name: Radis d'hiver
+  family: brassicacees
+  aliases: [radis-noir, radis-noir-rond, daikon]
+  # Fenetre lue sur le sachet Kokopelli Noir Rond et sa fiche. Vilmorin (Noir Gros Rond d'hiver) seme de juillet a septembre :
+  # un semis de septembre reste possible en Gironde, hors de la fenetre du sachet.
+  sowDirect: { value: { from: 23, to: 36 }, estimate: true, source: "Kokopelli, fiche Black Round P5604, https://kokopelli-semences.fr/en/p/black-round-radish ('Sowing period (outdoors) : June, July, August' ; 'Harvest period : September, October, November, December'), lue le 2026-10-20 ; sachet Kokopelli Radis Noir Rond (variete d'hiver), calendrier imprime identique" }
+  firstHarvestDays: { value: { days: 70, from: sowing }, source: "Truffaut, fiche produit Vilmorin, https://www.truffaut.com/vilmorin-radis-noir-bio.html (Radis Noir Gros Rond d'hiver bio : 'environ 70-80 jours après le semis', borne basse)", estimate: true }
+  spacingCm: { value: { inRow: 5, betweenRows: 30 }, source: "Kokopelli, fiche Black Round P5604, https://kokopelli-semences.fr/en/p/black-round-radish ('Sow in rows 30 cm apart. Thin to 5 cm on the row')", estimate: true }
+  frostSensitive: false
+  goodCompanions: [carotte, salade, petit-pois]
+  badCompanions: []
+  seedLifespanYears: { value: 5, source: "Alsagarden, tableau 'Duree de conservation et germination des graines potageres', https://www.alsagarden.com/blog/duree-de-conservation-et-germination-des-graines-potageres/ (Radis, 5 ans)", estimate: true }
+  maturitySigns: "Racine de 8 à 10 cm de diamètre, ferme ; se garde en terre ou en cave jusqu'aux fortes gelées."
+
 - id: carotte
   name: Carotte
   family: apiacees
