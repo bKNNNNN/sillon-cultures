@@ -1,8 +1,10 @@
 // Derives a degree-day target from a day count, for crops with no degree-day source (0.4.0).
 //
-// The catalog delay (`firstHarvestDays`, from sowing) is taken to hold for a spring sowing at the end of April
-// (ISO week 18), the season national seed catalogs describe, or for a crop sown only in autumn, for the
-// start of its window (see `referenceWeek`). The target is the sum of
+// The catalog delay (`firstHarvestDays`, from sowing) is taken to hold for a sowing inside the crop's own
+// direct-sowing window, as close as the window allows to the end of April (ISO week 18), the season national
+// seed catalogs describe (see `referenceWeek`). A winter radish sown from June is read as a June sowing, a
+// spinach sown until mid-April as a mid-April one, a mache sown from late August as a late-August one.
+// The target is the sum of
 // daily degree-days over that delay, from a normal year at Bordeaux-Merignac. sillon-core then counts
 // the same target against the real weather, so a sowing in a colder season takes longer than the catalog
 // says, and a warmer one less. The result is an estimate: it only moves the catalog day count with
@@ -43,26 +45,47 @@ export function mondayOfIsoWeek(week, year = YEAR) {
   return jan4 - jan4Day * DAY_MS + (week - 1) * 7 * DAY_MS;
 }
 
-const firstWindow = (field) => (field ? (Array.isArray(field.value) ? field.value[0] : field.value) : null);
+const windowsOf = (field) => (field ? (Array.isArray(field.value) ? field.value : [field.value]) : []);
 const sowingDelay = (crop) => {
   const value = crop.firstHarvestDays?.value;
   const list = Array.isArray(value) ? value : value ? [value] : [];
   return list.find((d) => d.from === 'sowing')?.days ?? null;
 };
 
-/** Spring sowing (Monday 27 April 2026, ISO week 18) for which national seed catalogs give their delays. */
+/** End of April (Monday 27 April 2026, ISO week 18), the sowing national seed catalogs give their delays for. */
 export const SPRING_REFERENCE_WEEK = 18;
-/** A first direct window opening this late (August) means a crop sown only for autumn. */
-export const AUTUMN_ONLY_FROM_WEEK = 32;
+const WEEKS = 52;
+
+/** Weeks of a window, in order, wrapping the new year when `from` is after `to`. */
+function weeksOf({ from, to }) {
+  const weeks = [];
+  for (let w = from; ; w = (w % WEEKS) + 1) {
+    weeks.push(w);
+    if (w === to || weeks.length > WEEKS) return weeks;
+  }
+}
+
+const distanceToSpring = (week) => {
+  const d = Math.abs(week - SPRING_REFERENCE_WEEK);
+  return Math.min(d, WEEKS - d);
+};
 
 /**
- * Reference sowing week. Week 18 for every crop, except a crop sown only from August on (mache),
- * whose catalog delay already describes autumn growth: the start of its first window.
+ * Reference sowing week: the week of a direct-sowing window nearest to week 18, so always a week in
+ * which the crop is really sown. Week 18 itself when a window holds it. Otherwise the start of a window
+ * that opens later (radis-hiver and navet from week 23, chou-chinois from 19, mache from 36) or the end
+ * of a window that closes earlier (epinard, spring window 6 to 15: week 15). On a tie, the earlier week.
+ * Null for a crop with no direct sowing.
  */
 export function referenceWeek(crop) {
-  const w = firstWindow(crop.sowDirect);
-  if (!w) return null;
-  return w.from >= AUTUMN_ONLY_FROM_WEEK && w.from <= w.to ? w.from : SPRING_REFERENCE_WEEK;
+  let best = null;
+  for (const window of windowsOf(crop.sowDirect)) {
+    for (const week of weeksOf(window)) {
+      const d = distanceToSpring(week);
+      if (best === null || d < best.d || (d === best.d && week < best.week)) best = { week, d };
+    }
+  }
+  return best?.week ?? null;
 }
 
 /** Degree-day target, rounded to 10, or null when the crop lacks a window, a sowing delay or a base temperature. */

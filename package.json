@@ -18,6 +18,7 @@
     "url": "https://github.com/bKNNNNN/sillon-cultures"
   },
   "scripts": {
-    "check": "node scripts/check.mjs"
+    "check": "node scripts/check.mjs",
+    "test": "node --test scripts/gdd.test.mjs"
   }
 }

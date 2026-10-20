@@ -98,11 +98,14 @@
 # `gdd` est donc DERIVE du delai `firstHarvestDays` par scripts/gdd.mjs : somme des degres-jours au-dessus de
 # `tBaseC` pendant ce delai, sur une annee normale de Bordeaux-Merignac (Meteo-France, normales 1991-2020,
 # temperature moyenne mensuelle placee au 15 du mois, interpolee entre deux mois), pour un semis le lundi de la
-# semaine 18 (fin avril), saison que decrivent les catalogues. La mache, semee seulement a partir d'aout, prend
-# le debut de sa fenetre (semaine 36). sillon-core compte ensuite ces degres-jours sur la meteo reelle : un semis
-# d'octobre arrive plus tard que le delai du catalogue, un semis de debut septembre a peu pres a la meme date (le
-# debut septembre est aussi chaud que mai a Merignac). La lumiere (jours courts, mi-ombre) n'est pas comptee.
-# Ici `gdd` vise la premiere recolte d'une plante adulte, pas une maturite FAO. `estimate: true` partout ;
+# semaine de `sowDirect` la plus proche de la semaine 18 (fin avril), saison que decrivent les catalogues : la
+# semaine 18 quand une fenetre la contient, sinon le debut d'une fenetre qui s'ouvre plus tard (radis-hiver et
+# navet : 23, chou-chinois : 19, mache : 36) ou la fin d'une fenetre qui se ferme plus tot (epinard : 15). Le
+# delai du catalogue decrit donc toujours un semis que la culture connait. sillon-core compte ensuite ces
+# degres-jours sur la meteo reelle : un semis d'octobre arrive plus tard que le delai du catalogue. La lumiere
+# (jours courts, mi-ombre) n'est pas comptee.
+# Ici `gdd` vise la premiere recolte d'une plante adulte, jamais une duree de saison (`daysToMaturity`) ; toute
+# culture qui a `gdd` a un `firstHarvestDays` depuis le semis (contrat dans README.md). `estimate: true` partout ;
 # scripts/check.mjs recalcule chaque valeur. `tBaseC` de ces cultures : table Purdue MRCC par analogie
 # (Brassicacees : ligne Collards ; epinard et blette : ligne Beet ; mache : ligne Lettuce ; cerfeuil et
 # coriandre : ligne Carrot). Le delai du navet (60 jours) vient d'un navet ordinaire, Vilmorin Boule de Neige.
@@ -334,7 +337,7 @@
   spacingCm: { value: { inRow: 5, betweenRows: 30 }, source: "Kokopelli, fiche Black Round P5604, https://kokopelli-semences.fr/en/p/black-round-radish ('Sow in rows 30 cm apart. Thin to 5 cm on the row')", estimate: true }
   frostSensitive: false
   tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description, ligne Collards (40 F), par analogie : Brassicacee de saison fraiche", estimate: true }
-  gdd: { value: 960, source: "derive, scripts/gdd.mjs : 70 jours (firstHarvestDays) depuis un semis le 2026-04-27 (semaine 18), degres-jours au-dessus de tBaseC sur les normales 1991-2020 de Bordeaux-Merignac (Meteo-France, fiche 33281001, temperature moyenne mensuelle)", estimate: true }
+  gdd: { value: 1150, source: "derive, scripts/gdd.mjs : 70 jours (firstHarvestDays) depuis un semis le 2026-06-01 (semaine 23), degres-jours au-dessus de tBaseC sur les normales 1991-2020 de Bordeaux-Merignac (Meteo-France, fiche 33281001, temperature moyenne mensuelle)", estimate: true }
   frostClass: { value: hardy, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('Temperatures below 26-31 ºF, cause a hard frost or freeze. Some cool season crops will tolerate a temperature dip to these temperatures for a limited period of time', liste : radishes)", estimate: true }
   rootDepthM: { value: 0.3, source: "FAO-56 tableau 22, ligne Radishes, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.3-0.5 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
   depletionP: { value: 0.30, source: "FAO-56 tableau 22, ligne Radishes, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
@@ -492,7 +495,7 @@
   kc: { value: { initial: 0.7, mid: 1.0, late: 0.95 }, source: "FAO-56 tableau 12 via jeux de donnees du paquet R FAO56 1.0, https://cran.r-project.org/src/contrib/FAO56_1.0.tar.gz", estimate: true }
   frostSensitive: false
   tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description, ligne Beet (40 F), par analogie : Amaranthacee comme la betterave", estimate: true }
-  gdd: { value: 520, source: "derive, scripts/gdd.mjs : 42 jours (firstHarvestDays) depuis un semis le 2026-04-27 (semaine 18), degres-jours au-dessus de tBaseC sur les normales 1991-2020 de Bordeaux-Merignac (Meteo-France, fiche 33281001, temperature moyenne mensuelle)", estimate: true }
+  gdd: { value: 420, source: "derive, scripts/gdd.mjs : 42 jours (firstHarvestDays) depuis un semis le 2026-04-06 (semaine 15), degres-jours au-dessus de tBaseC sur les normales 1991-2020 de Bordeaux-Merignac (Meteo-France, fiche 33281001, temperature moyenne mensuelle)", estimate: true }
   frostClass: { value: hardy, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('will survive even If the temperature drops below 26 ºF for an extended period of time', liste : spinach)", estimate: true }
   rootDepthM: { value: 0.3, source: "FAO-56 tableau 22, ligne Spinach, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.3-0.5 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
   depletionP: { value: 0.20, source: "FAO-56 tableau 22, ligne Spinach, https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
@@ -587,7 +590,7 @@
   spacingCm: { value: { inRow: 30, betweenRows: 30 }, source: "Kokopelli, fiches Pak Choy P1319 et Tatsoi Spoon L0192, https://kokopelli-semences.fr/en/p/tatsoi-spoon-chinese-cabbage ('in clusters of 2 to 3 seeds, 30 cm apart in all directions')", estimate: true }
   frostSensitive: false
   tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description, ligne Collards (40 F), par analogie : Brassicacee de saison fraiche", estimate: true }
-  gdd: { value: 560, source: "derive, scripts/gdd.mjs : 45 jours (firstHarvestDays) depuis un semis le 2026-04-27 (semaine 18), degres-jours au-dessus de tBaseC sur les normales 1991-2020 de Bordeaux-Merignac (Meteo-France, fiche 33281001, temperature moyenne mensuelle)", estimate: true }
+  gdd: { value: 600, source: "derive, scripts/gdd.mjs : 45 jours (firstHarvestDays) depuis un semis le 2026-05-04 (semaine 19), degres-jours au-dessus de tBaseC sur les normales 1991-2020 de Bordeaux-Merignac (Meteo-France, fiche 33281001, temperature moyenne mensuelle)", estimate: true }
   # Non cite par NCSU : hardy, estimation (revue agronomique 2.2).
   frostClass: { value: hardy, estimate: true }
   rootDepthM: { value: 0.3, source: "FAO-56 tableau 22, ligne Lettuce, https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.3-0.5 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling'), par analogie : petite culture a feuilles recoltee jeune, comme la laitue", estimate: true }
@@ -762,7 +765,7 @@
   frostSensitive: false
   firstHarvestDays: { value: { days: 60, from: sowing }, source: "Vilmorin, navet Boule de Neige, fiche produit vendue par Bricomarche, https://www.bricomarche.com/p/navet-legume-rond-boule-de-neige-vilmorin/3182670247415 ('Cycle de croissance : 60-80 jours (selon la saison)', borne basse)", estimate: true }
   tBaseC: { value: 4.4, source: "Purdue MRCC (Tbase en F converti en C), https://mrcc.purdue.edu/resources/growing-degree-day-description, ligne Collards (40 F), par analogie : Brassicacee de saison fraiche", estimate: true }
-  gdd: { value: 800, source: "derive, scripts/gdd.mjs : 60 jours (firstHarvestDays) depuis un semis le 2026-04-27 (semaine 18), degres-jours au-dessus de tBaseC sur les normales 1991-2020 de Bordeaux-Merignac (Meteo-France, fiche 33281001, temperature moyenne mensuelle)", estimate: true }
+  gdd: { value: 970, source: "derive, scripts/gdd.mjs : 60 jours (firstHarvestDays) depuis un semis le 2026-06-01 (semaine 23), degres-jours au-dessus de tBaseC sur les normales 1991-2020 de Bordeaux-Merignac (Meteo-France, fiche 33281001, temperature moyenne mensuelle)", estimate: true }
   frostClass: { value: hardy, source: "NC State Extension, Frost and Freeze Protection for Vegetables, https://gardening.ces.ncsu.edu/2020/05/frost-and-freeze-protection-for-vegetables-2 ('Temperatures below 26-31 ºF, cause a hard frost or freeze. Some cool season crops will tolerate a temperature dip to these temperatures for a limited period of time', liste : turnips)", estimate: true }
   rootDepthM: { value: 0.5, source: "FAO-56 tableau 22, ligne Turnip (and Rutabaga), https://www.fao.org/4/x0490e/x0490e0e.htm (Zr 0.5-1.0 m, borne basse : 'The smaller values for Zr may be used for irrigation scheduling')", estimate: true }
   depletionP: { value: 0.50, source: "FAO-56 tableau 22, ligne Turnip (and Rutabaga), https://www.fao.org/4/x0490e/x0490e0e.htm (p pour ETc d'environ 5 mm/j)", estimate: true }
