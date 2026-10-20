@@ -9,7 +9,7 @@ permissions:
 
 env:
   # sillon-core release whose parseCrops must accept cultures.yaml.
-  SILLON_CORE_REF: v0.3.0
+  SILLON_CORE_REF: v0.4.0
 
 jobs:
   parse:
@@ -30,5 +30,7 @@ jobs:
       - name: Build sillon-core
         working-directory: core
         run: pnpm install --frozen-lockfile && pnpm build
+      - name: Unit tests
+        run: node --test scripts/gdd.test.mjs
       - name: Check cultures.yaml
         run: node scripts/check.mjs core/dist/index.js

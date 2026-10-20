@@ -1,6 +1,6 @@
 {
   "name": "sillon-cultures",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Base cultures potagères sourcée (fenêtres de semis, durées, Kc FAO-56, associations), calée sur la Gironde.",
   "license": "CC-BY-SA-4.0",
   "author": "Pierrick Deniel",
@@ -18,6 +18,7 @@
     "url": "https://github.com/bKNNNNN/sillon-cultures"
   },
   "scripts": {
-    "check": "node scripts/check.mjs"
+    "check": "node scripts/check.mjs",
+    "test": "node --test scripts/gdd.test.mjs"
   }
 }

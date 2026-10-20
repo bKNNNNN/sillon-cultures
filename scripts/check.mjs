@@ -3,6 +3,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { checkAlertFields } from './check-alert-fields.mjs';
 
 const corePath = process.argv[2];
 if (!corePath) {
@@ -59,6 +60,8 @@ for (const crop of crops) {
     }
   }
 }
+
+checkAlertFields(crops, fail);
 
 for (const { crop: id, field, label } of RETRACTED_QUOTES) {
   const source = getCrop(crops, id)?.[field]?.source ?? '';
