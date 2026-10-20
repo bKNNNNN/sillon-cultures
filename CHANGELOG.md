@@ -1,5 +1,25 @@
 # Journal des versions
 
+## 0.3.0
+
+Audit des 19 sachets du propriétaire, le 2026-10-20 : chaque calendrier imprimé a été relu sur la photo, puis comparé à la fiche produit Kokopelli de la variété et à une fiche de semencier indépendante. Aucun identifiant existant ne change.
+
+Nouvelles cultures :
+
+- `radis-hiver` (Brassicacées) : semis en place de juin à août (semaines 23 à 36), première récolte 70 jours après le semis (Vilmorin, Noir Gros Rond d'hiver). Alias `radis-noir`, `radis-noir-rond` et `daikon`. Un radis noir semé le 8 septembre était annoncé prêt le 13 octobre avec le délai du radis de printemps ; il l'est maintenant vers la mi-novembre.
+- `chou-chinois` (Brassicacées) : pak choi et tatsoi, semis en place de mai à août (19 à 36), première récolte 45 jours après le semis, espacement 30 × 30 cm. Alias `pak-choi`, `pak-choy`, `bok-choy` et `tatsoi`. Ces sachets étaient rangés sous `chou`, qui désigne le chou cabus d'été.
+
+Corrections :
+
+- Roquette : semis en place de mars à septembre (10 à 40). La fenêtre sous abri de septembre lue en 0.2.1 venait de la légende « *sous abris » du sachet ; ni la pastille ni la fiche Kokopelli ne la donnent.
+- Moutarde : seconde fenêtre de semis en place prolongée jusqu'à fin octobre (32 à 44), fenêtre sous abri d'octobre retirée, pour la même raison.
+- Coriandre : semis en place jusqu'à fin septembre (15 à 40), sous abri en mars et avril (10 à 18).
+- Cerfeuil : sous abri en février et mars (6 à 14).
+- Betterave : semis sous abri en février et mars (6 à 14), d'après les deux sachets et fiches Kokopelli.
+- Blette : semis sous abri de mars à mai (10 à 22), espacement 30 × 40 cm.
+
+Données ajoutées : premières récoltes pour la roquette (40 jours), la moutarde (40), la coriandre (50) et le cerfeuil (60) ; espacements Kokopelli pour coriandre, roquette, navet, moutarde et cerfeuil ; succession de 15 jours pour la roquette. Toutes ces valeurs portent `estimate: true` : aucune source n'est propre à la Gironde.
+
 ## 0.2.1
 
 Cinq cultures ajoutées, lues sur des sachets Kokopelli le 2026-10-20 :

@@ -90,6 +90,8 @@
 #
 # `aliases` : anciens identifiants d'une culture. `chou` (v0.1.0) est un alias de `chou-ete`.
 # `moutarde-japonaise`, `moutarde-indienne` et `mizuna` sont des alias de `moutarde`.
+# `radis-noir`, `radis-noir-rond` et `daikon` sont des alias de `radis-hiver` ; `pak-choi`, `pak-choy`,
+# `bok-choy` et `tatsoi` sont des alias de `chou-chinois`.
 # Aucun `gdd` : aucune source de degres-jours vers la maturite n'a ete trouvee.
 # Associations : synthese de fiches grand public (neozone.org, FREDON Auvergne-Rhone-Alpes,
 # goodfood.brussels), non sourcees valeur par valeur.
