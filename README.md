@@ -69,7 +69,7 @@ Chaque `source` donne le statut et la clé GBIF de chaque nom, lus dans le GBIF 
 
 ## Versions
 
-Voir [CHANGELOG.md](CHANGELOG.md). Les applications épinglent une étiquette (`v0.4.0`), jamais une branche.
+Voir [CHANGELOG.md](CHANGELOG.md). Les applications épinglent une étiquette (`v0.5.0`), jamais une branche.
 
 ## Contribuer
 
