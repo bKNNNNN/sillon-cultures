@@ -36,7 +36,7 @@ daysToMaturity: { value: 155, source: "FAO-56 tableau 11, ligne Tomato...", esti
 
 L'en-tête du fichier détaille les limites de chaque source. Lisez-le avant de vous en servir. Pour 15 cultures, les fenêtres de semis et de plantation viennent en entier du calendrier du livret « Graine d'assiette » du Département de la Gironde, au mois près. Ce livret pédagogique a été écrit par le Conseil départemental des jeunes, donc ces fenêtres restent des estimations. Pour d'autres, seul le début de fenêtre vient d'une source aquitaine (Jardiner Malin, un maraîcher bordelais) et la fin reste une estimation. Les fenêtres sans source régionale gardent leur valeur d'origine, plus froide que le Médoc, avec un commentaire au-dessus. Les délais `firstHarvestDays` viennent de fiches nationales et restent des estimations. Les durées de vie des graines viennent toutes du même tableau d'un vendeur de semences.
 
-Le fichier se valide avec [sillon-core](https://github.com/bKNNNNN/sillon-core) 0.4.0 ou plus récent : `node scripts/check.mjs <chemin vers sillon-core/dist/index.js>`. La CI le lance à chaque push. Le contrôle compare aussi chaque champ d'alerte aux tableaux sources recopiés dans `scripts/sources.mjs`, et recalcule les degrés-jours dérivés.
+Les deux fichiers se valident avec [sillon-core](https://github.com/bKNNNNN/sillon-core) 0.4.0 ou plus récent : `node scripts/check.mjs <chemin vers sillon-core/dist/index.js>`. La CI le lance à chaque push. Le contrôle compare aussi chaque champ d'alerte aux tableaux sources recopiés dans `scripts/sources.mjs`, et recalcule les degrés-jours dérivés.
 
 ## Contrat de `gdd`
 
@@ -46,6 +46,26 @@ Depuis 0.4.0, `gdd` compte les degrés-jours jusqu'à la première récolte, com
 - ne jamais tirer la ligne de fin de culture de cette prévision : elle vient de `daysToMaturity`, et disparaît quand elle ne tombe pas après la première récolte.
 
 L'application n'affiche ainsi jamais deux dates pour la même récolte, ni une seconde date plus tôt que la première. sillon-core 0.4.0 lit encore `gdd` comme une saison dans `forecastHarvest` : c'est l'application qui fait ce tri, tant qu'une version de sillon-core ne le fait pas elle-même.
+
+## Noms scientifiques
+
+Depuis 0.5.0, `scientific-names.yaml` donne pour chaque culture la liste de ses noms scientifiques, sans auteur : le nom accepté d'abord, puis les synonymes qu'un service d'identification par photo (Pl@ntNet) peut encore renvoyer. Le fichier est à part pour que sillon-core 0.4.0 à 0.6.0, qui refuse tout champ inconnu dans une culture, lise toujours `cultures.yaml`.
+
+```yaml
+- id: chou-chinois
+  scientificNames: [Brassica rapa, Brassica rapa subsp. chinensis, Brassica rapa subsp. narinosa, ...]
+  source: "GBIF Backbone, lu le 2026-10-21 : Brassica rapa accepte (7903057) ; ..."
+```
+
+Chaque `source` donne le statut et la clé GBIF de chaque nom, lus dans le GBIF Backbone Taxonomy le 2026-10-21. Un nom peut désigner plusieurs cultures : la photo ne distingue pas une betterave d'une blette (Beta vulgaris), ni un chou d'été d'un chou d'hiver (Brassica oleracea). Une application qui lit ce fichier doit :
+
+- comparer les noms sans auteur, sans casse, en ignorant le signe hybride (`Fragaria ×ananassa` et `Fragaria x ananassa` sont le même nom) ;
+- chercher d'abord le nom complet, avec son rang infraspécifique (`Raphanus sativus var. niger` ne donne que le radis d'hiver) ;
+- si aucune culture ne liste ce rang, chercher le binôme seul parmi les cultures qui listent ce binôme (`Brassica oleracea var. italica` propose les deux choux) ;
+- proposer toutes les cultures trouvées et laisser le jardinier choisir ;
+- quand rien ne correspond, afficher le nom brut et « pas dans la base ».
+
+`scripts/scientific-names.mjs` est la lecture de référence de ce contrat, et `scripts/check.mjs` vérifie que chaque culture a une entrée sourcée et que des noms types donnent les bonnes cultures.
 
 ## Versions
 
@@ -66,6 +86,7 @@ Pour une correction ou une nouvelle région, ouvrez une pull request avec, pour 
 - Conseil départemental des jeunes de la Gironde, livret « Graine d'assiette » 2016-2017, calendrier page 11.
 - Météo-France, fiche climatologique 1991-2020 de Bordeaux-Mérignac (jours de gel par mois, températures moyennes mensuelles).
 - Harrington (UC Davis), températures du sol pour la germination, reproduites par Oregon State University Extension.
+- GBIF Backbone Taxonomy, noms scientifiques acceptés et synonymes (`scientific-names.yaml`).
 - NC State Extension, « Frost and Freeze Protection for Vegetables » (tenue au froid).
 - Truffaut et Bricomarché, fiches produit Vilmorin pour les délais de première récolte.
 - Alsagarden, tableau de durée de conservation des graines potagères.

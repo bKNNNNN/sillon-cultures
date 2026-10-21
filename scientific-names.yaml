@@ -1,0 +1,157 @@
+# Noms scientifiques des cultures (0.5.0). Une entree par culture de cultures.yaml, meme `id`.
+# Usage : un service d'identification par photo (Pl@ntNet) repond par un nom scientifique ; ce fichier
+# dit quelles cultures de la base ce nom peut designer. Le fichier est separe de cultures.yaml pour que
+# sillon-core 0.4.0 a 0.6.0, dont le schema de culture refuse tout champ inconnu, lisent encore la base.
+#
+# Regles :
+# - `scientificNames` : noms sans auteur, ecrits comme scripts/scientific-names.mjs les affiche
+#   (genre en majuscule, signe hybride `×` suivi d'une espace, un seul rang infraspecifique au plus :
+#   `subsp.`, `var.`, `convar.` ou `f.`). Le nom accepte vient en premier, puis les synonymes
+#   qu'un service peut encore renvoyer.
+# - Un meme nom peut figurer dans plusieurs cultures : Beta vulgaris est betterave et blette, Brassica
+#   oleracea chou d'ete et chou d'hiver, Raphanus sativus radis et radis d'hiver, Brassica rapa chou
+#   chinois et navet, Cucurbita pepo courgette et courge. La photo ne les distingue pas : l'application
+#   propose les candidates et le jardinier choisit. Un rang infraspecifique liste par une seule culture
+#   la designe seule (Raphanus sativus var. niger : radis d'hiver).
+# - Lecture (contrat pour l'application et sillon-core) : nom compare sans auteur, sans casse, signe
+#   hybride ignore ; d'abord le nom complet, puis, si le nom porte un rang que personne ne liste, le
+#   binome seul, parmi les cultures qui listent ce binome. Rien ne correspond : afficher le nom brut et
+#   "pas dans la base".
+# - Ce ne sont pas des valeurs agronomiques : chaque entree porte une `source`, pas d'`estimate`.
+#
+# Source : GBIF Backbone Taxonomy (https://www.gbif.org/dataset/d7dddbf4-2cf0-4f39-9b2a-bb099caae36c),
+# lue le 2026-10-21 par l'API https://api.gbif.org/v1/species/match (kingdom=Plantae, strict=true) et
+# https://api.gbif.org/v1/species?name=... pour les synonymes. Chaque `source` donne le statut et la cle
+# GBIF de chaque nom. Pl@ntNet renvoie avec chaque espece un identifiant GBIF et un identifiant POWO
+# (documentation https://my.plantnet.org/doc/api/identify) ; ses noms suivent donc la meme nomenclature.
+# Le referentiel exact de Pl@ntNet n'a pas ete lu : un nom renvoye mais absent ici s'ajoute par une
+# correction, avec sa cle GBIF.
+#
+# Laisses hors de la base, faute de culture qui leur corresponde : Phaseolus coccineus (haricot d'Espagne),
+# Fragaria vesca (fraise des bois), Diplotaxis tenuifolia (roquette sauvage), Cichorium endivia (chicorees).
+
+- id: tomate
+  scientificNames: [Solanum lycopersicum, Lycopersicon esculentum]
+  source: "GBIF Backbone, lu le 2026-10-21 : Solanum lycopersicum accepte (2930137) ; Lycopersicon esculentum synonyme de Solanum lycopersicum (2930181)"
+
+- id: courgette
+  scientificNames: [Cucurbita pepo]
+  source: "GBIF Backbone, lu le 2026-10-21 : Cucurbita pepo accepte (2874508)"
+
+- id: courge
+  scientificNames: [Cucurbita maxima, Cucurbita moschata, Cucurbita pepo]
+  source: "GBIF Backbone, lu le 2026-10-21 : Cucurbita maxima accepte (2874515), Cucurbita moschata accepte (7393329), Cucurbita pepo accepte (2874508)"
+
+- id: concombre
+  scientificNames: [Cucumis sativus]
+  source: "GBIF Backbone, lu le 2026-10-21 : Cucumis sativus accepte (2874569)"
+
+- id: haricot
+  scientificNames: [Phaseolus vulgaris]
+  source: "GBIF Backbone, lu le 2026-10-21 : Phaseolus vulgaris accepte (5350452)"
+
+- id: petit-pois
+  scientificNames: [Lathyrus oleraceus, Pisum sativum]
+  source: "GBIF Backbone, lu le 2026-10-21 : Lathyrus oleraceus accepte (5347846) ; Pisum sativum synonyme de Lathyrus oleraceus (5347845)"
+
+- id: salade
+  scientificNames: [Lactuca sativa]
+  source: "GBIF Backbone, lu le 2026-10-21 : Lactuca sativa accepte (7403263)"
+
+- id: radis
+  scientificNames: [Raphanus sativus, Raphanus raphanistrum subsp. sativus]
+  source: "GBIF Backbone, lu le 2026-10-21 : Raphanus sativus accepte (7678610) ; Raphanus raphanistrum subsp. sativus synonyme de Raphanus sativus (7772218)"
+
+# var. niger : radis noir ; var. longipinnatus : daikon.
+- id: radis-hiver
+  scientificNames: [Raphanus sativus, Raphanus sativus var. niger, Raphanus sativus var. longipinnatus]
+  source: "GBIF Backbone, lu le 2026-10-21 : Raphanus sativus accepte (7678610) ; Raphanus sativus var. niger (3040973) et var. longipinnatus (3040979) synonymes de Raphanus sativus"
+
+- id: carotte
+  scientificNames: [Daucus carota]
+  source: "GBIF Backbone, lu le 2026-10-21 : Daucus carota accepte (3034742)"
+
+- id: betterave
+  scientificNames: [Beta vulgaris, Beta vulgaris var. conditiva]
+  source: "GBIF Backbone, lu le 2026-10-21 : Beta vulgaris accepte (8971274) ; Beta vulgaris var. conditiva synonyme de Beta vulgaris subsp. vulgaris (8257605)"
+
+- id: poireau
+  scientificNames: [Allium ampeloprasum, Allium porrum, Allium ampeloprasum var. porrum]
+  source: "GBIF Backbone, lu le 2026-10-21 : Allium ampeloprasum accepte (2856037) ; Allium porrum L. (7668251) et Allium ampeloprasum var. porrum (2856465) synonymes de Allium ampeloprasum"
+
+- id: oignon
+  scientificNames: [Allium cepa]
+  source: "GBIF Backbone, lu le 2026-10-21 : Allium cepa accepte (2857697)"
+
+- id: ail
+  scientificNames: [Allium sativum]
+  source: "GBIF Backbone, lu le 2026-10-21 : Allium sativum accepte (2856681)"
+
+- id: pomme-de-terre
+  scientificNames: [Solanum tuberosum]
+  source: "GBIF Backbone, lu le 2026-10-21 : Solanum tuberosum accepte (2930262)"
+
+- id: epinard
+  scientificNames: [Spinacia oleracea]
+  source: "GBIF Backbone, lu le 2026-10-21 : Spinacia oleracea accepte (3083647)"
+
+# var. cicla : poiree.
+- id: blette
+  scientificNames: [Beta vulgaris, Beta vulgaris var. cicla, Beta vulgaris subsp. cicla]
+  source: "GBIF Backbone, lu le 2026-10-21 : Beta vulgaris accepte (8971274), Beta vulgaris var. cicla accepte (7539798) ; Beta vulgaris subsp. cicla synonyme (7541214)"
+
+- id: chou-ete
+  scientificNames: [Brassica oleracea, Brassica oleracea var. capitata]
+  source: "GBIF Backbone, lu le 2026-10-21 : Brassica oleracea accepte (3042845) ; Brassica oleracea var. capitata synonyme de Brassica oleracea (3042846)"
+
+# var. sabauda : chou de Milan.
+- id: chou-hiver
+  scientificNames: [Brassica oleracea, Brassica oleracea var. capitata, Brassica oleracea var. sabauda]
+  source: "GBIF Backbone, lu le 2026-10-21 : Brassica oleracea accepte (3042845) ; Brassica oleracea var. capitata (3042846) et var. sabauda (3042857) synonymes de Brassica oleracea"
+
+# subsp. chinensis : pak choi ; subsp. narinosa : tatsoi ; subsp. pekinensis : chou de Pekin.
+- id: chou-chinois
+  scientificNames: [Brassica rapa, Brassica rapa subsp. chinensis, Brassica rapa subsp. narinosa, Brassica rapa subsp. pekinensis, Brassica chinensis, Brassica pekinensis]
+  source: "GBIF Backbone, lu le 2026-10-21 : Brassica rapa accepte (7903057) ; synonymes de Brassica rapa : subsp. chinensis (3042702), subsp. narinosa (3042732), subsp. pekinensis (3042735), Brassica chinensis (3042713), Brassica pekinensis (3042737)"
+
+- id: fraise
+  scientificNames: [Fragaria × ananassa]
+  source: "GBIF Backbone, lu le 2026-10-21 : Fragaria × ananassa (Weston) Rozier accepte (3029912)"
+
+- id: basilic
+  scientificNames: [Ocimum basilicum]
+  source: "GBIF Backbone, lu le 2026-10-21 : Ocimum basilicum accepte (2927096)"
+
+- id: persil
+  scientificNames: [Petroselinum crispum, Petroselinum hortense]
+  source: "GBIF Backbone, lu le 2026-10-21 : Petroselinum crispum accepte (7828157) ; Petroselinum hortense synonyme de Petroselinum crispum (3034911)"
+
+- id: feve
+  scientificNames: [Vicia faba]
+  source: "GBIF Backbone, lu le 2026-10-21 : Vicia faba accepte (2974832)"
+
+- id: mache
+  scientificNames: [Valerianella locusta, Valerianella olitoria]
+  source: "GBIF Backbone, lu le 2026-10-21 : Valerianella locusta accepte (2888778) ; Valerianella olitoria synonyme de Valerianella locusta (2888779)"
+
+- id: coriandre
+  scientificNames: [Coriandrum sativum]
+  source: "GBIF Backbone, lu le 2026-10-21 : Coriandrum sativum accepte (3034871)"
+
+# Les flores hesitent entre Eruca vesicaria et Eruca sativa pour la roquette cultivee ; GBIF accepte les deux.
+- id: roquette
+  scientificNames: [Eruca vesicaria, Eruca sativa]
+  source: "GBIF Backbone, lu le 2026-10-21 : Eruca vesicaria accepte (5375920), Eruca sativa accepte (7474861)"
+
+- id: navet
+  scientificNames: [Brassica rapa, Brassica rapa subsp. rapa]
+  source: "GBIF Backbone, lu le 2026-10-21 : Brassica rapa accepte (7903057), Brassica rapa subsp. rapa accepte (7225636)"
+
+# Brassica juncea : moutardes a feuilles (Red Giant) ; Brassica rapa subsp. nipposinica : mizuna.
+- id: moutarde
+  scientificNames: [Brassica juncea, Brassica juncea var. japonica, Brassica rapa subsp. nipposinica]
+  source: "GBIF Backbone, lu le 2026-10-21 : Brassica juncea accepte (3042751) ; Brassica juncea var. japonica synonyme de Brassica juncea (4272771) ; Brassica rapa subsp. nipposinica synonyme de Brassica rapa (3042682)"
+
+- id: cerfeuil
+  scientificNames: [Anthriscus cerefolium]
+  source: "GBIF Backbone, lu le 2026-10-21 : Anthriscus cerefolium accepte (5371746)"

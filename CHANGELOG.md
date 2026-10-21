@@ -1,5 +1,15 @@
 # Journal des versions
 
+## 0.5.0
+
+Noms scientifiques des cultures, pour l'identification par photo. `cultures.yaml` ne change pas : il se lit toujours avec sillon-core 0.4.0 ou plus récent. Aucun identifiant ne change.
+
+- Nouveau fichier `scientific-names.yaml`, exporté par le paquet : une entrée par culture (30), 56 noms en tout, avec le statut et la clé GBIF de chaque nom (GBIF Backbone Taxonomy, lu le 2026-10-21). Le nom accepté vient d'abord, puis les synonymes encore en usage : Pisum sativum pour le petit pois (accepté : Lathyrus oleraceus), Allium porrum pour le poireau (accepté : Allium ampeloprasum), Lycopersicon esculentum pour la tomate.
+- Les rangs infraspécifiques qui séparent deux cultures de la même espèce sont listés : Raphanus sativus var. niger et var. longipinnatus pour le radis d'hiver, Brassica rapa subsp. chinensis, narinosa et pekinensis pour le chou chinois, subsp. rapa pour le navet, subsp. nipposinica pour la moutarde (mizuna), Beta vulgaris var. cicla pour la blette.
+- Les espèces partagées restent partagées : Beta vulgaris (betterave, blette), Brassica oleracea (chou d'été, chou d'hiver), Brassica rapa (chou chinois, navet), Raphanus sativus (radis, radis d'hiver), Cucurbita pepo (courgette, courge). L'application propose les candidates.
+- Contrat de lecture dans README.md (« Noms scientifiques ») : nom sans auteur ni casse ni signe hybride, nom complet d'abord, puis binôme seul ; rien ne correspond, le nom brut et « pas dans la base ».
+- Contrôle : `scripts/check.mjs` exige une entrée sourcée par culture et des noms écrits sans auteur, puis vérifie 14 noms types. Tests unitaires dans `scripts/scientific-names.test.mjs`.
+
 ## 0.4.0
 
 Champs pour les alertes (gel, arrosage, température du sol) et prévisions d'automne qui ralentissent avec la saison. Il faut sillon-core 0.4.0 ou plus récent : les versions précédentes refusent ces champs. Aucun identifiant ne change. Toutes les valeurs ajoutées portent `estimate: true`, aucune source n'étant propre à la Gironde.
